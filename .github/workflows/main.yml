@@ -17,20 +17,29 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
         python-version: [3.7, 3.8, 3.9, '3.10']
 
     env:
       GEANT4_VERSION: 'v11.1.0'
-      ITK_VERSION: 'v5.1.0'
+      ITK_VERSION: 'v5.2.1'
 
     steps:
     - name: Checkout github repo
       uses: actions/checkout@v3
     - name: Checkout submodules
+      shell: bash -l {0}
       run: |
-        export GIT_SSL_NO_VERIFY=1
-        git submodule update --init --recursive
+        if [[ ${{ matrix.os }} == "ubuntu-latest" ]]; then
+          export GIT_SSL_NO_VERIFY=1
+          git submodule update --init --recursive
+        elif [[ ${{ matrix.os }} == "macos-latest" ]]; then
+          export GIT_SSL_NO_VERIFY=1
+          git submodule update --init --recursive
+        else
+          set "GIT_SSL_NO_VERIFY=1"
+          git submodule update --init --recursive
+        fi
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:
@@ -38,17 +47,20 @@ jobs:
         architecture: 'x64'
     - name: Get OS version
       id: get-os-version
+      shell: bash -l {0}
       run: |
-        if [ ${{ matrix.os }} == "ubuntu-latest" ]; then
+        if [[ ${{ matrix.os }} == "ubuntu-latest" ]]; then
             varOS=`cat /etc/os-release | grep "VERSION=" | grep -oP '(?<=\").*?(?=\")'`
             varOS=($varOS)
             echo "release=${varOS[0]}" >> $GITHUB_OUTPUT
-        else
+        elif [[ ${{ matrix.os }} == "macos-latest" ]]; then
             varOS=`sw_vers | grep "ProductVersion:"`
             varOS="${varOS#*:}"
             echo "release=${varOS:1}" >> $GITHUB_OUTPUT
+        else
+            varOS=`windows`
+            echo "release=${varOS}" >> $GITHUB_OUTPUT
         fi
-      shell: bash
     - name: Cache modules
       id: cache_opengate_core_dependencies
       uses: actions/cache@v3
@@ -91,7 +103,7 @@ jobs:
               mv dist_opengate/* dist/
           fi
     - uses: conda-incubator/setup-miniconda@v2
-      if: matrix.os == 'macos-latest'
+      if: (matrix.os == 'macos-latest') || (matrix.os == 'windows-latest')
       with:
           auto-update-conda: true
           activate-environment: opengate_core
@@ -175,6 +187,44 @@ jobs:
           find . -name '*whl' -exec bash -c ' mv $0 ${0/macosx_12_0/macosx_10_9}' {} \;
           cd ../..
           mv core/dist .
+    - name: Create opengate_core Wheel Windows
+      if: matrix.os == 'windows-latest'
+      shell: bash -l {0}
+      run: |
+          choco install cmake
+          cmake --version
+          conda info
+          conda list
+          which python
+          python --version
+          export PATH="/usr/local/miniconda/envs/opengate_core/bin/:$PATH"
+          conda install -c anaconda qt
+          mkdir -p $HOME/software
+          if [ "${{ steps.cache_opengate_core_dependencies.outputs.cache-hit }}" != 'true' ]; then
+              cd $HOME/software
+              mkdir geant4
+              cd geant4
+              mkdir src bin data
+              git clone --branch $GEANT4_VERSION https://github.com/Geant4/geant4.git --depth 1 src
+              cd bin
+              cmake -DGEANT4_INSTALL_DATA=ON \
+                    -DGEANT4_INSTALL_DATADIR=$HOME/software/geant4/data \
+                    -DGEANT4_USE_QT=ON \
+                    -DGEANT4_BUILD_MULTITHREADED=OFF \
+                    ../src
+              cmake --build . --config Release
+              cd $HOME/software
+              mkdir itk
+              cd itk
+              mkdir src bin
+              git clone --branch $ITK_VERSION https://github.com/InsightSoftwareConsortium/ITK.git --depth 1 src
+              cd bin
+              cmake -DCMAKE_CXX_FLAGS=-std=c++17 \
+                    -DBUILD_TESTING=OFF \
+                    ../src
+              cmake --build . --config Release
+          fi
+          cd $GITHUB_WORKSPACE
     - name: Upload wheels
       uses: actions/upload-artifact@v3
       with:
