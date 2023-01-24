@@ -62,7 +62,7 @@ void GateSingleParticleSource::GeneratePrimaryVertex(G4Event *event) {
   G4ThreeVector position;
   G4ParticleMomentum momentum_direction;
   fAAManager->StartAcceptLoop();
-  while (not accept_angle) {
+  while (!accept_angle) {
     // position
     position = fPositionGenerator->VGenerateOne();
 
@@ -71,9 +71,8 @@ void GateSingleParticleSource::GeneratePrimaryVertex(G4Event *event) {
 
     // accept ?
     accept_angle = fAAManager->TestIfAccept(position, momentum_direction);
-    if (not accept_angle and
-        fAAManager->GetPolicy() ==
-            GateAcceptanceAngleTesterManager::AAZeroEnergy) {
+    if (!accept_angle && fAAManager->GetPolicy() ==
+                             GateAcceptanceAngleTesterManager::AAZeroEnergy) {
       e_zero = true;
       accept_angle = true;
     }

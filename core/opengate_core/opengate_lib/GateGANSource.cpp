@@ -92,7 +92,7 @@ void GateGANSource::GeneratePrimaries(G4Event *event,
     Fatal("Sorry, confine is not implemented with GAN source");
   }
 
-  if (fIsPaired and fAAManager.IsEnabled()) {
+  if (fIsPaired && fAAManager.IsEnabled()) {
     std::ostringstream oss;
     oss << "Error, cannot use AngularAcceptance with GAN pairs (yet) for "
            "source '"
@@ -100,7 +100,7 @@ void GateGANSource::GeneratePrimaries(G4Event *event,
     Fatal(oss.str());
   }
 
-  if (fIsPaired and
+  if (fIsPaired &&
       fSkipEnergyEventMode == GateAcceptanceAngleTesterManager::AASkipEvent) {
     std::ostringstream oss;
     oss << "Error, cannot use SkipEvent mode with GAN pairs (yet) for "
@@ -153,8 +153,8 @@ void GateGANSource::GeneratePrimariesSingle(G4Event *event,
 
   // set to E=0 if angle not ok (when mode is AAZeroEnergy)
   if (fAAManager.GetPolicy() ==
-          GateAcceptanceAngleTesterManager::AAZeroEnergy and
-      not accept_angle) {
+          GateAcceptanceAngleTesterManager::AAZeroEnergy &&
+      !accept_angle) {
     accept_angle = true;
     accept_energy = true;
     skipped = 1;
@@ -163,8 +163,8 @@ void GateGANSource::GeneratePrimariesSingle(G4Event *event,
   }
 
   // set to E=0 if energy not ok (when mode is AAZeroEnergy)
-  if (fSkipEnergyEventMode == GateAcceptanceAngleTesterManager::AAZeroEnergy and
-      not accept_energy) {
+  if (fSkipEnergyEventMode == GateAcceptanceAngleTesterManager::AAZeroEnergy &&
+      !accept_energy) {
     accept_angle = true;
     accept_energy = true;
     skipped = 1;
@@ -173,8 +173,7 @@ void GateGANSource::GeneratePrimariesSingle(G4Event *event,
   }
 
   // loop while not ok
-  while ((not accept_angle or not accept_energy) and
-         fCurrentIndex < fEnergy.size()) {
+  while ((!accept_angle || !accept_energy) && fCurrentIndex < fEnergy.size()) {
     skipped++;
     fCurrentIndex++;
 
@@ -246,7 +245,7 @@ void GateGANSource::GeneratePrimariesPair(G4Event *event,
 
   // check if valid
   bool accept_energy = energy > fEnergyThreshold;
-  if (not accept_energy) {
+  if (!accept_energy) {
     energy = 0;
     // at least one of the two vertices has been skipped
     fCurrentSkippedEvents = 1;
@@ -261,7 +260,7 @@ void GateGANSource::GeneratePrimariesPair(G4Event *event,
       time = fTime2[fCurrentIndex];
     }
   }
-  if (not accept_energy)
+  if (!accept_energy)
     time = current_simulation_time;
   fEffectiveEventTime =
       min(time, fEffectiveEventTime); // consider the earliest one
