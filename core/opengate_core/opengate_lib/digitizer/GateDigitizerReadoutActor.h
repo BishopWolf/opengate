@@ -10,6 +10,7 @@
 
 #include "../GateVActor.h"
 #include "G4Cache.hh"
+#include "GateDigiAdderInVolume.h"
 #include "GateDigiCollection.h"
 #include "GateDigiCollectionIterator.h"
 #include "GateDigitizerAdderActor.h"
