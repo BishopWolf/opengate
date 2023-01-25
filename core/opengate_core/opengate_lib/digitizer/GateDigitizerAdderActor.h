@@ -10,7 +10,7 @@
 
 #include "../GateVActor.h"
 #include "G4Cache.hh"
-#include "GateDigiAdderInVolume.h"
+// #include "GateDigiAdderInVolume.h"
 #include "GateDigiCollection.h"
 #include "GateDigiCollectionIterator.h"
 #include "GateHelpersDigitizer.h"
@@ -77,7 +77,7 @@ protected:
 
   // During computation (thread local)
   struct threadLocalT {
-    std::map<std::string, GateDigiAdderInVolume> fMapOfDigiInVolume;
+    std::map<std::string, GateDigiAdderInVolume *> fMapOfDigiInVolume;
     double *edep;
     G4ThreeVector *pos;
     GateUniqueVolumeID::Pointer *volID;
