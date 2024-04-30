@@ -1258,12 +1258,12 @@ def define_apertures(field_X, field_Y, SAD=1000):
     pos_X_leaf = np.zeros(160)
     pos_X_leaf[0:80] -= 0.5 * mm
     pos_X_leaf[80:160] += 0.5 * mm
-    pos_X_leaf[
-        39 - int(nb_of_leaf_open / 2) : 39 + int(nb_of_leaf_open / 2) + 1
-    ] = -MLC_X_aperture
-    pos_X_leaf[
-        119 - int(nb_of_leaf_open / 2) : 119 + int(nb_of_leaf_open / 2) + 1
-    ] = MLC_X_aperture
+    pos_X_leaf[39 - int(nb_of_leaf_open / 2) : 39 + int(nb_of_leaf_open / 2) + 1] = (
+        -MLC_X_aperture
+    )
+    pos_X_leaf[119 - int(nb_of_leaf_open / 2) : 119 + int(nb_of_leaf_open / 2) + 1] = (
+        MLC_X_aperture
+    )
 
     pos_X_leaf = np.array(10 * pos_X_leaf, dtype=int) / 10
 
@@ -1519,7 +1519,7 @@ def run_simu(sim, source_flag, cp_param, seg_cp=2):
         region_linac_target = sim.create_region(name=f"{target.name}")
         region_linac_target.associate_volume(target)
         s = f"/process/em/setSecBiasing eBrem {target.name} 100 100 MeV"
-        sim.apply_g4_command(s)
+        sim.add_g4_command_after_init(s)
     sec = gate.g4_units.s
     sim.run_timing_intervals = []
     for i in range(len(MU)):

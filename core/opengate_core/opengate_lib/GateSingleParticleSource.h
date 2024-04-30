@@ -17,7 +17,6 @@
 #include "GateHelpers.h"
 #include "GateSPSEneDistribution.h"
 #include "GateSPSPosDistribution.h"
-#include <pybind11/embed.h>
 
 #include "GateRandomMultiGauss.h"
 
@@ -28,8 +27,6 @@
 */
 
 class GateGenericSource;
-
-namespace py = pybind11;
 
 class GateSingleParticleSource : public G4VPrimaryGenerator {
 
@@ -55,6 +52,11 @@ public:
   G4ThreeVector GenerateDirectionWithAA(const G4ThreeVector &position,
                                         bool &accept);
 
+  void GeneratePrimaryVertexBackToBack(G4Event *event, G4ThreeVector &position,
+                                       G4ThreeVector &direction, double energy);
+
+  void SetBackToBackMode(bool flag, bool accolinearityFlag);
+
 protected:
   G4ParticleDefinition *fParticleDefinition;
   double fCharge;
@@ -63,6 +65,8 @@ protected:
   G4SPSAngDistribution *fDirectionGenerator;
   GateSPSEneDistribution *fEnergyGenerator;
   G4SPSRandomGenerator *fBiasRndm;
+  bool fAccolinearityFlag;
+  bool fBackToBackMode;
 
   // for acceptance angle
   GateAcceptanceAngleTesterManager *fAAManager;

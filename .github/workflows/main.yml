@@ -17,11 +17,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-12, windows-latest]
         python-version: [3.8, 3.9, '3.10', '3.11']
-        exclude:
-          - os: macos-latest
-            python-version: '3.11'
 
     env:
       GEANT4_VERSION: 'v11.1.1'
@@ -29,14 +26,14 @@ jobs:
 
     steps:
     - name: Checkout github repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Checkout submodules
       shell: bash -l {0}
       run: |
         if [[ ${{ matrix.os }} == "ubuntu-latest" ]]; then
           export GIT_SSL_NO_VERIFY=1
           git submodule update --init --recursive
-        elif [[ ${{ matrix.os }} == "macos-latest" ]]; then
+        elif [[ ${{ matrix.os }} == "macos-12" ]]; then
           export GIT_SSL_NO_VERIFY=1
           git submodule update --init --recursive
         else
@@ -44,7 +41,7 @@ jobs:
           git submodule update --init --recursive
         fi
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
         architecture: 'x64'
@@ -56,7 +53,7 @@ jobs:
             varOS=`cat /etc/os-release | grep "VERSION=" | grep -oP '(?<=\").*?(?=\")'`
             varOS=($varOS)
             echo "release=${varOS[0]}" >> $GITHUB_OUTPUT
-        elif [[ ${{ matrix.os }} == "macos-latest" ]]; then
+        elif [[ ${{ matrix.os }} == "macos-12" ]]; then
             varOS=`sw_vers | grep "ProductVersion:"`
             varOS="${varOS#*:}"
             echo "release=${varOS:1}" >> $GITHUB_OUTPUT
@@ -66,7 +63,7 @@ jobs:
         fi
     - name: Cache modules
       id: cache_opengate_core_dependencies
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ~/software
         key: ${{ runner.os }}-${{ steps.get-os-version.outputs.release }}_geant4_${{ env.GEANT4_VERSION }}_itk_${{ env.ITK_VERSION }}_build5
@@ -77,8 +74,8 @@ jobs:
           if [ ${{ matrix.python-version }} == "3.9" ]; then
               rm -rf $GITHUB_WORKSPACE/opengate/tests/data
               cp $GITHUB_WORKSPACE/.git/modules/gam-tests/data/HEAD $GITHUB_WORKSPACE/opengate/tests/
-              pip install wheel
-              python setup.py sdist bdist_wheel
+              pip install build
+              python -m build
               mv dist dist_opengate
           fi
     - name: Create opengate_core Wheel Linux
@@ -105,21 +102,23 @@ jobs:
               ls -lrt dist_opengate/
               mv dist_opengate/* dist/
           fi
-    - uses: conda-incubator/setup-miniconda@v2
-      if: (matrix.os == 'macos-latest') || (matrix.os == 'windows-latest')
+    - uses: conda-incubator/setup-miniconda@v3
+      if: (matrix.os == 'macos-12') || (matrix.os == 'windows-latest')
       with:
           auto-update-conda: true
           activate-environment: opengate_core
           python-version: ${{ matrix.python-version }}
     - name: Set up Homebrew
-      if: matrix.os == 'macos-latest'
+      if: matrix.os == 'macos-12'
       id: set-up-homebrew
       uses: Homebrew/actions/setup-homebrew@master
     - name: Create opengate_core Wheel Mac
-      if: matrix.os == 'macos-latest'
+      if: matrix.os == 'macos-12'
       shell: bash -l {0}
       run: |
-          brew update
+          brew install python@3.12 || true
+          brew link --overwrite python@3.12
+          #brew update
           #rm -rf /usr/local/bin/python3.1*-config /usr/local/bin/2to3-3.1* /usr/local/bin/idle3.1* /usr/local/bin/pydoc3.1* /usr/local/bin/python3.1*
           #rm -rf /usr/local/bin/python3-config /usr/local/bin/2to3 /usr/local/bin/idle3 /usr/local/bin/pydoc3 /usr/local/bin/python3
           brew install --force --verbose --overwrite \
@@ -187,6 +186,8 @@ jobs:
             export CIBW_BUILD="cp39-macosx_x86_64"
           elif [ ${{ matrix.python-version }} == "3.10" ]; then
             export CIBW_BUILD="cp310-macosx_x86_64"
+          elif [ ${{ matrix.python-version }} == "3.11" ]; then
+            export CIBW_BUILD="cp311-macosx_x86_64"
           fi
           export CIBW_BEFORE_BUILD="python -m pip install colored"
           python -m cibuildwheel --output-dir dist
@@ -256,9 +257,9 @@ jobs:
           python $GITHUB_WORKSPACE\\.github\\workflows\\delocateWindows.py core\\dist -w core\\dist2 -d C:\\Users\\runneradmin\\software\\geant4\\bin\\BuildProducts\\Release\\bin
           mv core/dist2 dist
     - name: Upload wheels
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: dist
+        name: dist-${{ matrix.os }}-${{ matrix.python-version }}
         path: dist/
 
   publish_wheel:
@@ -266,10 +267,11 @@ jobs:
     needs: [build_wheel]
     steps:
     - name: Checkout github repo
-      uses: actions/checkout@v3
-    - uses: actions/download-artifact@v3
+      uses: actions/checkout@v4
+    - uses: actions/download-artifact@v4
       with:
-        name: dist
+        pattern: dist-*
+        merge-multiple: true
         path: dist/
     - name: Separate the wheels
       run: |
@@ -297,12 +299,13 @@ jobs:
 #    runs-on: windows-latest
 #    needs: [build_wheel]
 #    steps:
-#    - uses: actions/download-artifact@v3
+#    - uses: actions/download-artifact@v4
 #      with:
-#        name: dist
+#        pattern: dist-*
+#        merge-multiple: true
 #        path: dist/
 #    - name: Set up Python 3.9
-#      uses: actions/setup-python@v4
+#      uses: actions/setup-python@v5
 #      with:
 #       python-version: 3.9
 #       architecture: 'x64'
@@ -318,18 +321,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-12, windows-latest]
         python-version: [3.8, 3.9, '3.10', '3.11']
-        exclude:
-          - os: macos-latest
-            python-version: '3.11'
     steps:
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
-        name: dist
+        pattern: dist-*
+        merge-multiple: true
         path: dist/
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
         architecture: 'x64'
@@ -351,7 +352,7 @@ jobs:
             export OSNAME="manylinux"
             export PLATFORM="x86_"
             pip install torch --extra-index-url https://download.pytorch.org/whl/cpu
-          elif [[ ${{ matrix.os }} == "macos-latest" ]]; then
+          elif [[ ${{ matrix.os }} == "macos-12" ]]; then
             export OSNAME="macosx"
             export PLATFORM="x86_"
             which python
@@ -368,20 +369,20 @@ jobs:
           pip install dist/opengate-*.whl
           export GIT_SSL_NO_VERIFY=1
           if [[ ${{ matrix.os }} == "ubuntu-latest" ]]; then
-              path=`opengate_tests_utils -p site_packages`
+              path=`opengate_library_path.py -p site_packages`
               export LD_LIBRARY_PATH="${path}/opengate_core.libs":${LD_LIBRARY_PATH}
-              path=`opengate_tests_utils -p libG4processes`
+              path=`opengate_library_path.py -p libG4processes`
               export LD_PRELOAD=${path}:${LD_PRELOAD}
-              path=`opengate_tests_utils -p libG4geometry`
+              path=`opengate_library_path.py -p libG4geometry`
               export LD_PRELOAD=${path}:${LD_PRELOAD}
           fi
           if [[ ${{ matrix.os }} == "windows-latest" ]]; then
-              path=`opengate_tests_utils -p site_packages`
+              path=`opengate_library_path.py -p site_packages`
               export LD_LIBRARY_PATH="${path}/opengate_core.libs":${LD_LIBRARY_PATH}
               export PATH="${path}\\opengate_core.libs":${PATH}
           fi
           pip freeze
-          if [ $Pr_Number == "" ]; then
+          if [ "${{ github.event_name }}" = "schedule" ]; then
               OutputTest=$(opengate_tests)
           else
               OutputTest=$(opengate_tests -r)
@@ -393,5 +394,3 @@ jobs:
           else
               exit 0
           fi
-      env:
-        Pr_Number: ${{ github.event.number }}
