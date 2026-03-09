@@ -25,6 +25,7 @@ python --version
 export PATH="/usr/local/miniconda/envs/opengate_core/bin/:$PATH"
 pip install wget colored
 pip install wheel delocate
+pip install cibuildwheel==3.4.0
 if [[ ${MATRIX_OS} == "macos-15-intel" ]]; then
     conda install conda-forge::qt6-main conda-forge::qt6-3d
 else
@@ -75,7 +76,9 @@ else
     cp -r /opt/homebrew/share/qt/plugins/platforms/* opengate_core/plugins/
     cp -r /opt/homebrew/share/qt/plugins/imageformats/* opengate_core/plugins/
 fi
-python3 setup.py sdist bdist_wheel
+export CIBW_BUILD="*"
+export CIBW_BEFORE_BUILD="python -m pip install colored"
+python -m cibuildwheel --output-dir dist
 ls dist
 if [[ ${MATRIX_OS} == "macos-15-intel" ]]; then
     export DYLD_LIBRARY_PATH=$HOME/software/geant4/bin/BuildProducts/lib:/Users/runner/miniconda3/envs/opengate_core/lib/qt6/plugins/platforms:/opt/X11/lib/:$DYLD_LIBRARY_PATH:/Users/runner/miniconda3/envs/opengate_core/lib

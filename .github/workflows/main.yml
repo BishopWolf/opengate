@@ -30,7 +30,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-24.04]
-        python-version: ['3.10']
+        python-version: ['3.14']
     steps:
     - name: Checkout github repo
       uses: actions/checkout@v6
@@ -62,12 +62,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-24.04, macos-15, windows-2025]
-        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
-        exclude:
-          - os: macos-15
-            python-version: '3.10'
-          - os: windows-2025
-            python-version: '3.10'
+        python-version: ['3.14']
     steps:
     - name: Checkout github repo
       uses: actions/checkout@v6
@@ -97,12 +92,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-24.04-arm, macos-15-intel]
-        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
-        exclude:
-          - os: macos-15
-            python-version: '3.10'
-          - os: windows-2025
-            python-version: '3.10'
+        python-version: ['3.14']
     steps:
     - name: Checkout github repo
       uses: actions/checkout@v6
@@ -132,7 +122,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-24.04]
-        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
+        python-version: ['3.14']
     steps:
     - name: Checkout github repo
       uses: actions/checkout@v6
@@ -312,7 +302,7 @@ jobs:
           miniconda-version: "latest"
           auto-update-conda: true
           activate-environment: vega-altair
-          python-version: '3.10'
+          python-version: '3.14'
     - name: Merge the results
       shell: bash -el {0}
       run: |
