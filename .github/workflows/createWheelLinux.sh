@@ -12,7 +12,7 @@ cp -r /lib64/qt6/plugins/platforms/* opengate_core/plugins/
 cp -r /lib64/qt6/plugins/imageformats opengate_core/plugins/
 /opt/python/${PYTHONFOLDER}/bin/pip install wget colored setuptools
 /opt/python/${PYTHONFOLDER}/bin/pip install cibuildwheel==3.4.0
-export CIBW_BUILD="*"
+export CIBW_BUILD="*-manylinux_x86_64 *-manylinux_aarch64"
 export CIBW_BEFORE_BUILD="python -m pip install colored"
 /opt/python/${PYTHONFOLDER}/bin/python -m cibuildwheel --output-dir /home/core/dist
 archi=`uname -m`
