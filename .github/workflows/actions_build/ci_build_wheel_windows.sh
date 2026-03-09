@@ -58,17 +58,7 @@ cd $GITHUB_WORKSPACE
 source $HOME/software/geant4/bin/geant4make.sh
 export CMAKE_PREFIX_PATH=$HOME/software/geant4/bin:$HOME/software/itk/bin/:${CMAKE_PREFIX_PATH}
 cd core
-if [[ ${MATRIX_PYTHON_VERSION} == "3.10" ]]; then
-  export CIBW_BUILD="cp310-win_amd64"
-elif [[ ${MATRIX_PYTHON_VERSION} == "3.11" ]]; then
-  export CIBW_BUILD="cp311-win_amd64"
-elif [[ ${MATRIX_PYTHON_VERSION} == "3.12" ]]; then
-  export CIBW_BUILD="cp312-win_amd64"
-elif [[ ${MATRIX_PYTHON_VERSION} == "3.13" ]]; then
-  export CIBW_BUILD="cp313-win_amd64"
-elif [[ ${MATRIX_PYTHON_VERSION} == "3.14" ]]; then
-  export CIBW_BUILD="cp314-win_amd64"
-fi
+export CIBW_BUILD="*"
 find $HOME/software/geant4/bin/ -iname "*.dll"
 ls $HOME/software/geant4/bin/BuildProducts/Release/bin
 ls $HOME/software/geant4/bin/BuildProducts/Release/lib/
