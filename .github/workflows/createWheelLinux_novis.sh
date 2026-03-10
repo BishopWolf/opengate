@@ -14,6 +14,7 @@ export CIBW_BUILD_PLATFORM="build[uv]"
 export CIBW_ARCHS="x86_64 aarch64"
 export CIBW_PLATFORM="linux"
 export CIBW_BEFORE_BUILD="python -m pip install colored"
+export CIBW_FREE_THREADED_SUPPORT=0
 /opt/python/${PYTHONFOLDER}/bin/python -m cibuildwheel --output-dir /home/core/dist
 auditwheel repair /home/core/dist/*.whl -w /software/wheelhouse/ --plat "manylinux2014_x86_64"
 cp -r /software/wheelhouse /home/

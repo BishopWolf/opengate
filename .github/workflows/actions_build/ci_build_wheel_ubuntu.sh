@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-apt install docker
+sudo apt-get install docker
 source $GITHUB_WORKSPACE/env_dump.txt
 export PYTHONFOLDER="cp314-cp314"
 mkdir -p $HOME/software

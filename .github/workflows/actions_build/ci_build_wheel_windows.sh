@@ -55,8 +55,9 @@ source $HOME/software/geant4/bin/geant4make.sh
 export CMAKE_PREFIX_PATH=$HOME/software/geant4/bin:$HOME/software/itk/bin/:${CMAKE_PREFIX_PATH}
 cd core
 export CIBW_BUILD_PLATFORM="build[uv]"
-export CIBW_ARCHS="amd64 arm64"
+export CIBW_ARCHS="x86_64 arm64"
 export CIBW_PLATFORM="windows"
+export CIBW_FREE_THREADED_SUPPORT=0
 find $HOME/software/geant4/bin/ -iname "*.dll"
 ls $HOME/software/geant4/bin/BuildProducts/Release/bin
 ls $HOME/software/geant4/bin/BuildProducts/Release/lib/
