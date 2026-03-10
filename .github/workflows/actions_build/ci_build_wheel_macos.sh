@@ -77,7 +77,6 @@ else
     cp -r /opt/homebrew/share/qt/plugins/imageformats/* opengate_core/plugins/
 fi
 export CIBW_BUILD_PLATFORM="build[uv]"
-export CIBW_ARCHS_MACOS="x86_64 arm64"
 export CIBW_PLATFORM="macos"
 export MACOSX_DEPLOYMENT_TARGET=15.0
 export CIBW_BEFORE_BUILD="python -m pip install colored"
@@ -85,8 +84,10 @@ export CIBW_REPAIR_WHEEL_COMMAND_MACOS=""
 
 if [[ ${MATRIX_OS} == "macos-15-intel" ]]; then
     export DYLD_LIBRARY_PATH=$HOME/software/geant4/bin/BuildProducts/lib:/Users/runner/miniconda3/envs/opengate_core/lib/qt6/plugins/platforms:/opt/X11/lib/:$DYLD_LIBRARY_PATH:/Users/runner/miniconda3/envs/opengate_core/lib
+    export CIBW_ARCHS_MACOS="x86_64"
 else
     export DYLD_LIBRARY_PATH=$HOME/software/geant4/bin/BuildProducts/lib:/opt/homebrew/share/qt/plugins/platforms/:/opt/X11/lib/:$DYLD_LIBRARY_PATH:/opt/homebrew/lib
+    export CIBW_ARCHS_MACOS="arm64"
     python -c "import os,delocate; print(os.path.join(os.path.dirname(delocate.__file__), 'tools.py'));quit()" | xargs -I{} sed -i."" "s/first, /input.pop('i386',None); first, /g" {}
 fi
 

@@ -7,7 +7,8 @@ export PATH=/software/cmake/cmake/bin/:${PATH}
 source /software/geant4/bin/geant4make.sh
 export CMAKE_PREFIX_PATH=/software/geant4/bin:/software/itk/bin/:${CMAKE_PREFIX_PATH}
 . /opt/rh/gcc-toolset-14/enable
-dnf install podman -y
+curl -sSL https://get.docker.com/ | sh
+archi=`uname -m`
 
 # Build the wheel
 mkdir opengate_core/plugins
@@ -16,15 +17,15 @@ cp -r /lib64/qt6/plugins/imageformats opengate_core/plugins/
 /opt/python/${PYTHONFOLDER}/bin/pip install wget colored setuptools
 /opt/python/${PYTHONFOLDER}/bin/pip install cibuildwheel==3.4.0
 export CIBW_BUILD_PLATFORM="build[uv]"
-export CIBW_ARCHS="x86_64 aarch64"
+if [ "$(uname -m)" = "aarch64" ]; then
+  export CIBW_ARCHS="aarch64"
+else
+  export CIBW_ARCHS="x86_64"
+fi
 export CIBW_PLATFORM="linux"
 export CIBW_BEFORE_BUILD="python -m pip install colored"
-export CIBW_OCI_EXE="podman"
-export CIBW_OCI_EXTRA_ARGS_CREATE="--events-backend=file --privileged"
-export CIBW_OCI_EXTRA_ARGS_COMMON="--cgroup-manager=cgroupfs --storage-driver=vfs --root=$HOME/.local/share/containers/vfs-storage/"
-export CIBW_OCI_EXTRA_ARGS_START="--events-backend=file --cgroup-manager=cgroupfs --storage-driver=vfs"
 /opt/python/${PYTHONFOLDER}/bin/python -m cibuildwheel --output-dir /home/core/dist
-archi=`uname -m`
+
 if [ "$(uname -m)" = "aarch64" ]; then
   auditwheel repair /home/core/dist/*.whl -w /software/wheelhouse/ --plat "manylinux_2_34_aarch64"
 else
