@@ -98,73 +98,74 @@ args = parser.parse_args()
 wheel_name = args.WHEEL_FILE
 print(wheel_name)
 print(os.path.join(wheel_name, "opengate_core-*-win_amd64.whl"))
-wheel_name = glob.glob(os.path.join(wheel_name, "opengate_core-*-win_amd64.whl"))[0]
-print(wheel_name)
-repaired_wheel = os.path.join(
-    os.path.abspath(args.WHEEL_DIR), os.path.basename(wheel_name)
-)
+wheel_names = glob.glob(os.path.join(wheel_name, "opengate_core-*-win_amd64.whl"))
+for wheel_name in wheel_names:
+    print(wheel_name)
+    repaired_wheel = os.path.join(
+        os.path.abspath(args.WHEEL_DIR), os.path.basename(wheel_name)
+    )
 
-old_wheel_dir = tempfile.mkdtemp()
-new_wheel_dir = tempfile.mkdtemp()
-package_name = os.path.basename(wheel_name).split("-")[0]
-bundle_name = package_name + ".libs"
-bundle_path = os.path.join(new_wheel_dir, bundle_name)
-os.makedirs(bundle_path)
+    old_wheel_dir = tempfile.mkdtemp()
+    new_wheel_dir = tempfile.mkdtemp()
+    package_name = os.path.basename(wheel_name).split("-")[0]
+    bundle_name = package_name + ".libs"
+    bundle_path = os.path.join(new_wheel_dir, bundle_name)
+    os.makedirs(bundle_path)
 
-with zipfile.ZipFile(wheel_name, "r") as wheel:
-    wheel.extractall(old_wheel_dir)
-    wheel.extractall(new_wheel_dir)
-    pyd_rel_paths = [
-        os.path.normpath(path) for path in wheel.namelist() if path.endswith(".pyd")
-    ]
+    with zipfile.ZipFile(wheel_name, "r") as wheel:
+        wheel.extractall(old_wheel_dir)
+        wheel.extractall(new_wheel_dir)
+        pyd_rel_paths = [
+            os.path.normpath(path) for path in wheel.namelist() if path.endswith(".pyd")
+        ]
 
-dll_dependencies = {}
-for rel_path in pyd_rel_paths:
-    abs_path = os.path.join(old_wheel_dir, rel_path)
-    print(rel_path)
-    dll_dependencies.update(find_dll_dependencies(abs_path, args.DLL_DIR))
+    dll_dependencies = {}
+    for rel_path in pyd_rel_paths:
+        abs_path = os.path.join(old_wheel_dir, rel_path)
+        print(rel_path)
+        dll_dependencies.update(find_dll_dependencies(abs_path, args.DLL_DIR))
 
-for dll, dependencies in dll_dependencies.items():
-    mapping = {}
+    for dll, dependencies in dll_dependencies.items():
+        mapping = {}
 
-    print(dll)
-    print(dependencies)
+        print(dll)
+        print(dependencies)
 
-    if dll.endswith(".pyd"):
-        rel_path = next(path for path in pyd_rel_paths if path.endswith(dll))
-
-    for dep in dependencies:
-        src_path = os.path.join(args.DLL_DIR, dep)
-        hashed_name = hash_filename(src_path)  # already basename
-        new_path = os.path.join(bundle_path, hashed_name)
         if dll.endswith(".pyd"):
-            bundle_rel_path = os.path.join(
-                "..\\" * rel_path.count(os.path.sep), bundle_name
-            )
-            mapping[dep.encode("ascii")] = os.path.join(
-                bundle_rel_path, hashed_name
-            ).encode("ascii")
+            rel_path = next(path for path in pyd_rel_paths if path.endswith(dll))
+
+        for dep in dependencies:
+            src_path = os.path.join(args.DLL_DIR, dep)
+            hashed_name = hash_filename(src_path)  # already basename
+            new_path = os.path.join(bundle_path, hashed_name)
+            if dll.endswith(".pyd"):
+                bundle_rel_path = os.path.join(
+                    "..\\" * rel_path.count(os.path.sep), bundle_name
+                )
+                mapping[dep.encode("ascii")] = os.path.join(
+                    bundle_rel_path, hashed_name
+                ).encode("ascii")
+            else:
+                mapping[dep.encode("ascii")] = hashed_name.encode("ascii")
+            if not os.path.exists(new_path):
+                shutil.copy2(src_path, new_path)
+
+        if dll.endswith(".pyd"):
+            old_name = os.path.join(old_wheel_dir, rel_path)
+            new_name = os.path.join(new_wheel_dir, rel_path)
         else:
-            mapping[dep.encode("ascii")] = hashed_name.encode("ascii")
-        if not os.path.exists(new_path):
-            shutil.copy2(src_path, new_path)
+            old_name = os.path.join(args.DLL_DIR, dll)
+            hashed_name = hash_filename(old_name)  # already basename
+            new_name = os.path.join(bundle_path, hashed_name)
 
-    if dll.endswith(".pyd"):
-        old_name = os.path.join(old_wheel_dir, rel_path)
-        new_name = os.path.join(new_wheel_dir, rel_path)
-    else:
-        old_name = os.path.join(args.DLL_DIR, dll)
-        hashed_name = hash_filename(old_name)  # already basename
-        new_name = os.path.join(bundle_path, hashed_name)
+        mangle_filename(old_name, new_name, mapping)
 
-    mangle_filename(old_name, new_name, mapping)
-
-pathlib.Path(os.path.dirname(repaired_wheel)).mkdir(parents=True, exist_ok=True)
-with zipfile.ZipFile(repaired_wheel, "w", zipfile.ZIP_DEFLATED) as new_wheel:
-    for root, dirs, files in os.walk(new_wheel_dir):
-        new_root = os.path.relpath(root, new_wheel_dir)
-        for file in files:
-            new_wheel.write(os.path.join(root, file), os.path.join(new_root, file))
+    pathlib.Path(os.path.dirname(repaired_wheel)).mkdir(parents=True, exist_ok=True)
+    with zipfile.ZipFile(repaired_wheel, "w", zipfile.ZIP_DEFLATED) as new_wheel:
+        for root, dirs, files in os.walk(new_wheel_dir):
+            new_root = os.path.relpath(root, new_wheel_dir)
+            for file in files:
+                new_wheel.write(os.path.join(root, file), os.path.join(new_root, file))
 
 now = datetime.now()
 print(now.strftime("%H:%M:%S"))

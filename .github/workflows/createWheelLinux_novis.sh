@@ -8,6 +8,7 @@ sed -i 's/name="opengate-core"/name="opengate-core-novis"/' setup.py
 export PATH=/software/cmake/cmake/bin/:${PATH}
 source /software/geant4/bin/geant4make.sh
 export CMAKE_PREFIX_PATH=/software/geant4/bin:/software/itk/bin/:${CMAKE_PREFIX_PATH}
+dnf install podman -y
 
 # Build the wheel
 /opt/python/${PYTHONFOLDER}/bin/pip install wget colored setuptools
@@ -16,7 +17,11 @@ export CIBW_BUILD_PLATFORM="build[uv]"
 export CIBW_ARCHS="x86_64 aarch64"
 export CIBW_PLATFORM="linux"
 export CIBW_BEFORE_BUILD="python -m pip install colored"
-/opt/python/${PYTHONFOLDER}/bin/python -m cibuildwheel --no-docker --output-dir /home/core/dist
+export CIBW_OCI_EXE="podman"
+export CIBW_OCI_EXTRA_ARGS_CREATE="--events-backend=file --privileged"
+export CIBW_OCI_EXTRA_ARGS_COMMON="--cgroup-manager=cgroupfs --storage-driver=vfs --root=$HOME/.local/share/containers/vfs-storage/"
+export CIBW_OCI_EXTRA_ARGS_START="--events-backend=file --cgroup-manager=cgroupfs --storage-driver=vfs"
+/opt/python/${PYTHONFOLDER}/bin/python -m cibuildwheel --output-dir /home/core/dist
 auditwheel repair /home/core/dist/*.whl -w /software/wheelhouse/ --plat "manylinux2014_x86_64"
 cp -r /software/wheelhouse /home/
 #/opt/python/${PYTHONFOLDER}/bin/pip install twine
