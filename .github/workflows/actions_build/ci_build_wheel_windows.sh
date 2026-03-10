@@ -57,7 +57,6 @@ cd core
 export CIBW_BUILD_PLATFORM="build[uv]"
 export CIBW_ARCHS="x86_64 arm64"
 export CIBW_PLATFORM="windows"
-export CIBW_FREE_THREADED_SUPPORT=0
 find $HOME/software/geant4/bin/ -iname "*.dll"
 ls $HOME/software/geant4/bin/BuildProducts/Release/bin
 ls $HOME/software/geant4/bin/BuildProducts/Release/lib/
