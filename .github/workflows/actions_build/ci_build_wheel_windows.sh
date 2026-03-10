@@ -54,8 +54,12 @@ cd $GITHUB_WORKSPACE
 source $HOME/software/geant4/bin/geant4make.sh
 export CMAKE_PREFIX_PATH=$HOME/software/geant4/bin:$HOME/software/itk/bin/:${CMAKE_PREFIX_PATH}
 cd core
+if [[ ${MATRIX_OS} == "windows-2025" ]]; then
+    export CIBW_ARCHS="AMD64"
+else
+    export CIBW_ARCHS="ARM64"
+fi
 export CIBW_BUILD_PLATFORM="build[uv]"
-export CIBW_ARCHS="AMD64" # ARM64 is not supported
 export CIBW_SKIP="*t*"
 export CIBW_PLATFORM="windows"
 find $HOME/software/geant4/bin/ -iname "*.dll"
