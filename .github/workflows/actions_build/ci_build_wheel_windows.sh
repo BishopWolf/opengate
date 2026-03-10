@@ -56,7 +56,7 @@ export CMAKE_PREFIX_PATH=$HOME/software/geant4/bin:$HOME/software/itk/bin/:${CMA
 cd core
 export CIBW_BUILD_PLATFORM="build[uv]"
 export CIBW_ARCHS="AMD64 ARM64"
-export CIBW_SKIP: "*t*"
+export CIBW_BUILD: "^*t*"
 export CIBW_PLATFORM="windows"
 find $HOME/software/geant4/bin/ -iname "*.dll"
 ls $HOME/software/geant4/bin/BuildProducts/Release/bin

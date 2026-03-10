@@ -19,6 +19,11 @@ find = { }  # Scanning implicit namespaces is active by default
 [tool.cibuildwheel]
 free-threaded-support = false
 
+[tool.cibuildwheel.macos]
+repair-wheel-command = [
+  "delocate-wheel -w fixed_wheels -v dist/*.whl",
+]
+
 [project]
 name = "opengate"
 dynamic = ["version", "readme", "dependencies"]
