@@ -10,11 +10,11 @@ source /software/geant4/bin/geant4make.sh
 export CMAKE_PREFIX_PATH=/software/geant4/bin:/software/itk/bin/:${CMAKE_PREFIX_PATH}
 
 # Install docker
-sudo dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-sudo dnf remove podman buildah
-sudo dnf install docker-ce docker-ce-cli containerd.io
-sudo systemctl start docker
-sudo systemctl enable docker
+dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+dnf remove podman buildah
+dnf install docker-ce docker-ce-cli containerd.io
+systemctl start docker
+systemctl enable docker
 
 # Build the wheel
 /opt/python/${PYTHONFOLDER}/bin/pip install wget colored setuptools
