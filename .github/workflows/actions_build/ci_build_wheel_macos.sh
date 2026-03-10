@@ -90,7 +90,6 @@ else
     python -c "import os,delocate; print(os.path.join(os.path.dirname(delocate.__file__), 'tools.py'));quit()" | xargs -I{} sed -i."" "s/first, /input.pop('i386',None); first, /g" {}
 fi
 
-ls dist
 python -m cibuildwheel --output-dir dist
 delocate-listdeps --all dist/*.whl
 delocate-wheel -w fixed_wheels -v dist/*.whl
