@@ -81,6 +81,7 @@ export CIBW_ARCHS="x86_64 arm64"
 export CIBW_PLATFORM="macos"
 export MACOSX_DEPLOYMENT_TARGET=15.0
 export CIBW_BEFORE_BUILD="python -m pip install colored"
+export CIBW_REPAIR_COMMAND="delocate-wheel -w fixed_wheels -v dist/*.whl"
 python -m cibuildwheel --output-dir dist
 ls dist
 if [[ ${MATRIX_OS} == "macos-15-intel" ]]; then
