@@ -8,7 +8,14 @@ sed -i 's/name="opengate-core"/name="opengate-core-novis"/' setup.py
 export PATH=/software/cmake/cmake/bin/:${PATH}
 source /software/geant4/bin/geant4make.sh
 export CMAKE_PREFIX_PATH=/software/geant4/bin:/software/itk/bin/:${CMAKE_PREFIX_PATH}
-curl -sSL https://get.docker.com/ | sh
+
+# Install docker
+dnf update -y
+dnf remove podman runc -y
+dnf config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo
+dnf install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+systemctl enable docker
+systemctl start docker
 
 # Build the wheel
 /opt/python/${PYTHONFOLDER}/bin/pip install wget colored setuptools
