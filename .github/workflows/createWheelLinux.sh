@@ -7,6 +7,15 @@ export PATH=/software/cmake/cmake/bin/:${PATH}
 source /software/geant4/bin/geant4make.sh
 export CMAKE_PREFIX_PATH=/software/geant4/bin:/software/itk/bin/:${CMAKE_PREFIX_PATH}
 . /opt/rh/gcc-toolset-14/enable
+
+# Install docker
+sudo dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+sudo dnf remove podman buildah
+sudo dnf install docker-ce docker-ce-cli containerd.io
+sudo systemctl start docker
+sudo systemctl enable docker
+
+# Build the wheel
 mkdir opengate_core/plugins
 cp -r /lib64/qt6/plugins/platforms/* opengate_core/plugins/
 cp -r /lib64/qt6/plugins/imageformats opengate_core/plugins/
