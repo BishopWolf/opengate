@@ -81,15 +81,17 @@ export CIBW_ARCHS="x86_64 arm64"
 export CIBW_PLATFORM="macos"
 export MACOSX_DEPLOYMENT_TARGET=15.0
 export CIBW_BEFORE_BUILD="python -m pip install colored"
-export CIBW_REPAIR_COMMAND="delocate-wheel -w fixed_wheels -v dist/*.whl"
-python -m cibuildwheel --output-dir dist
-ls dist
+export CIBW_REPAIR_COMMAND=""
+
 if [[ ${MATRIX_OS} == "macos-15-intel" ]]; then
     export DYLD_LIBRARY_PATH=$HOME/software/geant4/bin/BuildProducts/lib:/Users/runner/miniconda3/envs/opengate_core/lib/qt6/plugins/platforms:/opt/X11/lib/:$DYLD_LIBRARY_PATH:/Users/runner/miniconda3/envs/opengate_core/lib
 else
     export DYLD_LIBRARY_PATH=$HOME/software/geant4/bin/BuildProducts/lib:/opt/homebrew/share/qt/plugins/platforms/:/opt/X11/lib/:$DYLD_LIBRARY_PATH:/opt/homebrew/lib
     python -c "import os,delocate; print(os.path.join(os.path.dirname(delocate.__file__), 'tools.py'));quit()" | xargs -I{} sed -i."" "s/first, /input.pop('i386',None); first, /g" {}
 fi
+
+ls dist
+python -m cibuildwheel --output-dir dist
 delocate-listdeps --all dist/*.whl
 delocate-wheel -w fixed_wheels -v dist/*.whl
 rm -rf dist

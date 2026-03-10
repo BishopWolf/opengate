@@ -13,7 +13,10 @@ export CMAKE_PREFIX_PATH=/software/geant4/bin:/software/itk/bin/:${CMAKE_PREFIX_
 dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 dnf remove podman buildah
 dnf -y install docker-ce docker-ce-cli containerd.io
+usermod -aG docker ${USER}
+newgrp docker
 dockerd &
+sleep 10 # Wait for docker to start
 
 # Build the wheel
 /opt/python/${PYTHONFOLDER}/bin/pip install wget colored setuptools
