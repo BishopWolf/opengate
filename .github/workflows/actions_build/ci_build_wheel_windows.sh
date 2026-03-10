@@ -54,7 +54,9 @@ cd $GITHUB_WORKSPACE
 source $HOME/software/geant4/bin/geant4make.sh
 export CMAKE_PREFIX_PATH=$HOME/software/geant4/bin:$HOME/software/itk/bin/:${CMAKE_PREFIX_PATH}
 cd core
-export CIBW_BUILD="*-win_amd64 *-win_arm64"
+export CIBW_BUILD_PLATFORM="build[uv]"
+export CIBW_ARCHS="amd64 arm64"
+export CIBW_PLATFORM="windows"
 find $HOME/software/geant4/bin/ -iname "*.dll"
 ls $HOME/software/geant4/bin/BuildProducts/Release/bin
 ls $HOME/software/geant4/bin/BuildProducts/Release/lib/

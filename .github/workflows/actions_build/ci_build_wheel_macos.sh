@@ -76,7 +76,9 @@ else
     cp -r /opt/homebrew/share/qt/plugins/platforms/* opengate_core/plugins/
     cp -r /opt/homebrew/share/qt/plugins/imageformats/* opengate_core/plugins/
 fi
-export CIBW_BUILD="*-macosx_x86_64 *-macosx_arm64"
+export CIBW_BUILD_PLATFORM="build[uv]"
+export CIBW_ARCHS="x86_64 arm64"
+export CIBW_PLATFORM="macos"
 export CIBW_BEFORE_BUILD="python -m pip install colored"
 python -m cibuildwheel --output-dir dist
 ls dist
