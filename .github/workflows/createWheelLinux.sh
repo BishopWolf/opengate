@@ -23,6 +23,7 @@ else
   export CIBW_ARCHS="x86_64"
 fi
 export CIBW_PLATFORM="linux"
+export CIBW_REPAIR_WHEEL_COMMAND_LINUX=""
 export CIBW_BEFORE_BUILD="python -m pip install colored"
 /opt/python/${PYTHONFOLDER}/bin/python -m cibuildwheel --output-dir /home/core/dist
 
