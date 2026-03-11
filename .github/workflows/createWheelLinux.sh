@@ -10,10 +10,10 @@ export CMAKE_PREFIX_PATH=/software/geant4/bin:/software/itk/bin/:${CMAKE_PREFIX_
 archi=`uname -m`
 
 # Install docker
-dnf update -y
-dnf remove podman runc -y
-dnf config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo
-dnf install docker-ce-cli  -y
+# dnf update -y
+# dnf remove podman runc -y
+# dnf config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo
+# dnf install docker-ce-cli  -y
 
 # Build the wheel
 mkdir opengate_core/plugins
