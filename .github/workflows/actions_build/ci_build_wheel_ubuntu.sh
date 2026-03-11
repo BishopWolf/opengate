@@ -32,14 +32,10 @@ else
   export CIBW_ARCHS="x86_64"
   export CIBW_MANYLINUX_X86_64_IMAGE=tbaudier/opengate_core:${GEANT4_VERSION}
 fi
-export CIBW_BUILD_FRONTEND="build[uv]"
+export CIBW_BUILD_FRONTEND="build"
 export CIBW_PLATFORM="linux"
 export CIBW_REPAIR_WHEEL_COMMAND_LINUX=""
 export CIBW_SKIP="*-musllinux_*"
-export CIBW_ENVIRONMENT="
-Geant4_DIR=/software/geant4/src
-ITK_DIR=/software/itk/src
-"
 export CIBW_BEFORE_BUILD="
 export PATH=/software/cmake/cmake/bin/:${PATH} &&
 export CMAKE_PREFIX_PATH=/software/geant4/bin:/software/itk/bin/:${CMAKE_PREFIX_PATH} &&
