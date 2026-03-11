@@ -18,7 +18,7 @@ dnf install -y \
   mesa-libGL-devel
 
 # Répertoire des plugins Qt6
-QT_PLUGIN_DIR=$(rpm -ql qt6-qtbase-gui | grep "/plugins$" | head -n1)
+QT_PLUGIN_DIR=$(qtpaths --plugin-dir)
 
 echo "Répertoire plugins : $QT_PLUGIN_DIR"
 ls "$QT_PLUGIN_DIR/platforms"
