@@ -37,12 +37,10 @@ export CIBW_PLATFORM="linux"
 export CIBW_REPAIR_WHEEL_COMMAND_LINUX=""
 export CIBW_SKIP="*-musllinux_*"
 export CIBW_PYTHON_BINARIES="/opt/python/${PYTHONFOLDER}/bin/python"
-export CIBW_ENVIRONMENT="
-PATH=${PATH}:/software/cmake/cmake/bin/
-CMAKE_PREFIX_PATH=/software/geant4/bin:/software/itk/bin/:${CMAKE_PREFIX_PATH}
-"
 export CIBW_BEFORE_BUILD="
 cat /software/geant4/bin/geant4make.sh &&
+export PATH=${PATH}:/software/cmake/cmake/bin/ &&
+export CMAKE_PREFIX_PATH=/software/geant4/bin:/software/itk/bin/:${CMAKE_PREFIX_PATH} &&
 . /opt/rh/gcc-toolset-14/enable &&
 mkdir opengate_core/plugins &&
 cp -r /lib64/qt6/plugins/platforms/* opengate_core/plugins/ && 
