@@ -54,10 +54,11 @@ cd $GITHUB_WORKSPACE
 source $HOME/software/geant4/bin/geant4make.sh
 export CMAKE_PREFIX_PATH=$HOME/software/geant4/bin:$HOME/software/itk/bin/:${CMAKE_PREFIX_PATH}
 cd core
-if [[ ${MATRIX_OS} == "windows-2025" ]]; then
-    export CIBW_ARCHS="AMD64"
-else
+echo ${MATRIX_OS}
+if [[ ${MATRIX_OS} == "windows-2025-arm" ]]; then
     export CIBW_ARCHS="ARM64"
+else
+    export CIBW_ARCHS="AMD64"
 fi
 export CIBW_BUILD_PLATFORM="build[uv]"
 export CIBW_SKIP="*t*"
