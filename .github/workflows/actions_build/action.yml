@@ -45,7 +45,7 @@ runs:
         fi
     - name: Cache modules
       id: cache_opengate_core_dependencies
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ~/software
         key: ${{ runner.os }}-${{ steps.get-os-version.outputs.release }}_geant4_${{ env.GEANT4_VERSION }}_itk_${{ env.ITK_VERSION }}_build

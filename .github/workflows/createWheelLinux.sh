@@ -8,17 +8,12 @@ source /software/geant4/bin/geant4make.sh
 export CMAKE_PREFIX_PATH=/software/geant4/bin:/software/itk/bin/:${CMAKE_PREFIX_PATH}
 . /opt/rh/gcc-toolset-14/enable
 archi=`uname -m`
-
-# Install docker
-# dnf update -y
-# dnf remove podman runc -y
-# dnf config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo
-# dnf install docker-ce-cli  -y
+dnf install -y qt6-qtbase-gui qt6-qtbase-devel qt6-qtbase-gui-opengl qt6-qtbase-gui-wayland qt6-qtimageformats
 
 # Build the wheel
 mkdir opengate_core/plugins
-cp -r /lib64/qt6/plugins/platforms/* opengate_core/plugins/
-cp -r /lib64/qt6/plugins/imageformats opengate_core/plugins/
+#cp -r /lib64/qt6/plugins/platforms/* opengate_core/plugins/
+#cp -r /lib64/qt6/plugins/imageformats opengate_core/plugins/
 /opt/python/${PYTHONFOLDER}/bin/pip install wget colored setuptools
 /opt/python/${PYTHONFOLDER}/bin/pip install cibuildwheel==3.4.0
 export CIBW_BUILD_PLATFORM="build[uv]"
