@@ -27,8 +27,8 @@ export QT_PLUGIN_PATH=$QT_PLUGIN_DIR
 
 # Build the wheel
 mkdir opengate_core/plugins
-cp -r "$QT_PLUGIN_DIR/platforms/*" opengate_core/plugins/
-cp -r "$QT_PLUGIN_DIR/imageformats" opengate_core/plugins/
+cp -r /usr/lib64/qt6/plugins/platforms/* opengate_core/plugins/
+cp -r /usr/lib64/qt6/plugins/imageformats opengate_core/plugins/
 /opt/python/${PYTHONFOLDER}/bin/pip install wget colored setuptools
 /opt/python/${PYTHONFOLDER}/bin/pip install cibuildwheel==3.4.0
 export CIBW_BUILD_PLATFORM="build[uv]"
