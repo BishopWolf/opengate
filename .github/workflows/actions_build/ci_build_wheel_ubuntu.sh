@@ -39,8 +39,6 @@ export CIBW_SKIP="*-musllinux_*"
 export CIBW_BEFORE_BUILD="
 pwd &&
 ls -la &&
-ls -la /project &&
-cd core &&
 export PATH=/software/cmake/cmake/bin/:${PATH} &&
 source /software/geant4/bin/geant4make.sh &&
 export CMAKE_PREFIX_PATH=/software/geant4/bin:/software/itk/bin/:${CMAKE_PREFIX_PATH} &&
@@ -54,6 +52,7 @@ cp -r /lib64/qt6/plugins/imageformats opengate_core/plugins/ &&
 #docker run --rm -e "PYTHONFOLDER=${PYTHONFOLDER}" -v $GITHUB_WORKSPACE:/home tbaudier/opengate_core:${GEANT4_VERSION}$ARMDOCKER /home/.github/workflows/createWheelLinux.sh
 
 # Run the build without docker
+cd $GITHUB_WORKSPACE/core
 python -m cibuildwheel --output-dir dist 
 if [ ${MATRIX_OS} == "ubuntu-24.04-arm" ]; then
   auditwheel repair dist/*.whl -w wheelhouse/ --plat "manylinux_2_34_aarch64"
