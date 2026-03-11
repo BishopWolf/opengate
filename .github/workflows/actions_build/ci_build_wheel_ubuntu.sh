@@ -36,10 +36,14 @@ export CIBW_BUILD_FRONTEND="build[uv]"
 export CIBW_PLATFORM="linux"
 export CIBW_REPAIR_WHEEL_COMMAND_LINUX=""
 export CIBW_SKIP="*-musllinux_*"
+export CIBW_ENVIRONMENT="
+Geant4_DIR=/software/geant4/src
+ITK_DIR=/software/itk/src
+"
 export CIBW_BEFORE_BUILD="
-cat /software/geant4/bin/geant4make.sh &&
-export PATH=${PATH}:/software/cmake/cmake/bin/ &&
+export PATH=/software/cmake/cmake/bin/:${PATH} &&
 export CMAKE_PREFIX_PATH=/software/geant4/bin:/software/itk/bin/:${CMAKE_PREFIX_PATH} &&
+source /software/geant4/bin/geant4make.sh &&
 . /opt/rh/gcc-toolset-14/enable &&
 mkdir opengate_core/plugins &&
 cp -r /lib64/qt6/plugins/platforms/* opengate_core/plugins/ && 
