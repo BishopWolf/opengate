@@ -38,7 +38,7 @@ export CIBW_REPAIR_WHEEL_COMMAND_LINUX=""
 export CIBW_SKIP="*-musllinux_*"
 export CIBW_PYTHON_BINARIES="/opt/python/${PYTHONFOLDER}/bin/python"
 export CIBW_ENVIRONMENT="
-PATH=/software/cmake/cmake/bin/:${PATH}
+PATH=${PATH}:/software/cmake/cmake/bin/
 CMAKE_PREFIX_PATH=/software/geant4/bin:/software/itk/bin/:${CMAKE_PREFIX_PATH}
 "
 export CIBW_BEFORE_BUILD="
