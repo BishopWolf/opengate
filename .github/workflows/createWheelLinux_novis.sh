@@ -8,8 +8,6 @@ sed -i 's/name="opengate-core"/name="opengate-core-novis"/' setup.py
 export PATH=/software/cmake/cmake/bin/:${PATH}
 source /software/geant4/bin/geant4make.sh
 export CMAKE_PREFIX_PATH=/software/geant4/bin:/software/itk/bin/:${CMAKE_PREFIX_PATH}
-
-# Build the wheel
 /opt/python/${PYTHONFOLDER}/bin/pip install wget colored setuptools
 export PYBIND11_FINDPYTHON=OLD
 /opt/python/${PYTHONFOLDER}/bin/python setup.py sdist bdist_wheel
