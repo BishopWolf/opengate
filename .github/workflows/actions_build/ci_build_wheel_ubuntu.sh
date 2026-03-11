@@ -36,7 +36,6 @@ export CIBW_BUILD_FRONTEND="build[uv]"
 export CIBW_PLATFORM="linux"
 export CIBW_REPAIR_WHEEL_COMMAND_LINUX=""
 export CIBW_SKIP="*-musllinux_*"
-export CIBW_PYTHON_BINARIES="/opt/python/${PYTHONFOLDER}/bin/python"
 export CIBW_BEFORE_BUILD="
 cat /software/geant4/bin/geant4make.sh &&
 export PATH=${PATH}:/software/cmake/cmake/bin/ &&
