@@ -18,7 +18,15 @@ mkdir -p $HOME/software
 if [ ${MATRIX_OS} == "ubuntu-24.04-arm" ]; then
   export ARMDOCKER="_arm64"
 fi
-docker run --rm --privileged --cgroupns=host -e "PYTHONFOLDER=${PYTHONFOLDER}" -v /sys/fs/cgroup:/sys/fs/cgroup:ro -v $GITHUB_WORKSPACE:/home tbaudier/opengate_core:${GEANT4_VERSION}$ARMDOCKER /home/.github/workflows/createWheelLinux.sh
+# Run the build in docker
+docker run --rm --privileged --cgroupns=host \
+    -e "PYTHONFOLDER=${PYTHONFOLDER}" \
+    -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    -v /usr/bin/docker:/usr/bin/docker
+    -v $GITHUB_WORKSPACE:/home \
+    tbaudier/opengate_core:${GEANT4_VERSION}$ARMDOCKER \
+    /home/.github/workflows/createWheelLinux.sh
 ls wheelhouse
 rm -rf dist
 mv wheelhouse dist
