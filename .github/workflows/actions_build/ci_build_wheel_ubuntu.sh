@@ -37,15 +37,17 @@ export CIBW_PLATFORM="linux"
 export CIBW_REPAIR_WHEEL_COMMAND_LINUX=""
 export CIBW_SKIP="*-musllinux_*"
 export CIBW_ENVIRONMENT="
-PATH=/software/cmake/cmake/bin/:${PATH} &&
-CMAKE_PREFIX_PATH=/software/geant4/bin:/software/itk/bin/:${CMAKE_PREFIX_PATH}"
+PATH=/software/cmake/cmake/bin/:${PATH}
+CMAKE_PREFIX_PATH=/software/geant4/bin:/software/itk/bin/:${CMAKE_PREFIX_PATH}
+"
 export CIBW_BEFORE_BUILD="
 cat /software/geant4/bin/geant4make.sh &&
 . /opt/rh/gcc-toolset-14/enable &&
 mkdir opengate_core/plugins &&
 cp -r /lib64/qt6/plugins/platforms/* opengate_core/plugins/ && 
 cp -r /lib64/qt6/plugins/imageformats opengate_core/plugins/ &&
-/opt/python/${PYTHONFOLDER}/bin/pip install colored"
+/opt/python/${PYTHONFOLDER}/bin/pip install colored
+"
 
 # Run the build in docker
 #docker run --rm -e "PYTHONFOLDER=${PYTHONFOLDER}" -v $GITHUB_WORKSPACE:/home tbaudier/opengate_core:${GEANT4_VERSION}$ARMDOCKER /home/.github/workflows/createWheelLinux.sh
