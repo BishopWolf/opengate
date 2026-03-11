@@ -37,6 +37,9 @@ export CIBW_PLATFORM="linux"
 export CIBW_REPAIR_WHEEL_COMMAND_LINUX=""
 export CIBW_SKIP="*-musllinux_*"
 export CIBW_BEFORE_BUILD="
+pwd &&
+ls -la &&
+ls -la /project &&
 cd core &&
 export PATH=/software/cmake/cmake/bin/:${PATH} &&
 source /software/geant4/bin/geant4make.sh &&
@@ -51,12 +54,12 @@ cp -r /lib64/qt6/plugins/imageformats opengate_core/plugins/ &&
 #docker run --rm -e "PYTHONFOLDER=${PYTHONFOLDER}" -v $GITHUB_WORKSPACE:/home tbaudier/opengate_core:${GEANT4_VERSION}$ARMDOCKER /home/.github/workflows/createWheelLinux.sh
 
 # Run the build without docker
-python -m cibuildwheel --output-dir $GITHUB_WORKSPACE/dist 
+python -m cibuildwheel --output-dir dist 
 if [ ${MATRIX_OS} == "ubuntu-24.04-arm" ]; then
-  auditwheel repair $GITHUB_WORKSPACE/dist/*.whl -w $GITHUB_WORKSPACE/wheelhouse/ --plat "manylinux_2_34_aarch64"
+  auditwheel repair dist/*.whl -w wheelhouse/ --plat "manylinux_2_34_aarch64"
 else
-  auditwheel repair $GITHUB_WORKSPACE/dist/*.whl -w $GITHUB_WORKSPACE/wheelhouse/ --plat "manylinux_2_34_x86_64"
+  auditwheel repair dist/*.whl -w wheelhouse/ --plat "manylinux_2_34_x86_64"
 fi
-rm -rf $GITHUB_WORKSPACE/dist
-cp -r $GITHUB_WORKSPACE/wheelhouse $GITHUB_WORKSPACE
+rm -rf dist
+cp -r wheelhouse/* $GITHUB_WORKSPACE
 #sudo chown -R runner:docker $GITHUB_WORKSPACE/dist
