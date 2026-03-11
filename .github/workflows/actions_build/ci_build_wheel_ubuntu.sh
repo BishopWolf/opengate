@@ -27,10 +27,10 @@ pip install wget colored setuptools
 if [ ${MATRIX_OS} == "ubuntu-24.04-arm" ]; then
   export ARMDOCKER="_arm64"
   export CIBW_ARCHS="aarch64"
-  export CIBW_MANYLINUX_AARCH64_IMAGE: tbaudier/opengate_core:${GEANT4_VERSION}$ARMDOCKER
+  export CIBW_MANYLINUX_AARCH64_IMAGE=tbaudier/opengate_core:${GEANT4_VERSION}$ARMDOCKER
 else
   export CIBW_ARCHS="x86_64"
-  export CIBW_MANYLINUX_X86_64_IMAGE: tbaudier/opengate_core:${GEANT4_VERSION}
+  export CIBW_MANYLINUX_X86_64_IMAGE=tbaudier/opengate_core:${GEANT4_VERSION}
 fi
 export CIBW_BUILD_FRONTEND="build[uv]"
 export CIBW_PLATFORM="linux"
