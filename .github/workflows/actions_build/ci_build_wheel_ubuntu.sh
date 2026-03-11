@@ -23,7 +23,7 @@ docker run --rm --privileged --cgroupns=host \
     -e "PYTHONFOLDER=${PYTHONFOLDER}" \
     -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
     -v /var/run/docker.sock:/var/run/docker.sock \
-    -v /usr/bin/docker:/usr/bin/docker
+    -v /usr/bin/docker:/usr/bin/docker \
     -v $GITHUB_WORKSPACE:/home \
     tbaudier/opengate_core:${GEANT4_VERSION}$ARMDOCKER \
     /home/.github/workflows/createWheelLinux.sh
