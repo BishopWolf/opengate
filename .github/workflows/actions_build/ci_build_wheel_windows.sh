@@ -55,7 +55,7 @@ source $HOME/software/geant4/bin/geant4make.sh
 export CMAKE_PREFIX_PATH=$HOME/software/geant4/bin:$HOME/software/itk/bin/:${CMAKE_PREFIX_PATH}
 cd core
 echo ${MATRIX_OS}
-if [[ ${MATRIX_OS} == "windows-2025-arm" ]]; then
+if [[ ${MATRIX_OS} == "windows-11-arm" ]]; then
     export CIBW_ARCHS="ARM64"
 else
     export CIBW_ARCHS="AMD64"
