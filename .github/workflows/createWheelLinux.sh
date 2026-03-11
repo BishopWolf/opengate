@@ -10,6 +10,14 @@ export CMAKE_PREFIX_PATH=/software/geant4/bin:/software/itk/bin/:${CMAKE_PREFIX_
 archi=`uname -m`
 dnf install -y qt6-qtbase-gui qt6-qtbase-devel qt6-qtbase-gui-opengl qt6-qtbase-gui-wayland qt6-qtimageformats
 
+# Répertoire des plugins Qt6
+QT_PLUGIN_DIR=$(rpm -ql qt6-qtbase-gui | grep "/plugins$" | head -n1)
+
+echo "Répertoire plugins : $QT_PLUGIN_DIR"
+ls "$QT_PLUGIN_DIR/platforms"
+ls "$QT_PLUGIN_DIR/imageformats"
+export QT_PLUGIN_PATH=$QT_PLUGIN_DIR
+
 # Build the wheel
 mkdir opengate_core/plugins
 #cp -r /lib64/qt6/plugins/platforms/* opengate_core/plugins/
