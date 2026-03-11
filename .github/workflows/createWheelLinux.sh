@@ -8,7 +8,14 @@ source /software/geant4/bin/geant4make.sh
 export CMAKE_PREFIX_PATH=/software/geant4/bin:/software/itk/bin/:${CMAKE_PREFIX_PATH}
 . /opt/rh/gcc-toolset-14/enable
 archi=`uname -m`
-dnf install -y qt6-qtbase-gui qt6-qtbase-devel qt6-qtbase-gui-opengl qt6-qtbase-gui-wayland qt6-qtimageformats
+dnf install -y \
+  qt6-qtbase \
+  qt6-qtbase-devel \
+  qt6-qtbase-gui \
+  qt6-qtdeclarative-devel \
+  qt6-qtimageformats \
+  qt6-qtwayland \
+  mesa-libGL-devel
 
 # Répertoire des plugins Qt6
 QT_PLUGIN_DIR=$(rpm -ql qt6-qtbase-gui | grep "/plugins$" | head -n1)
