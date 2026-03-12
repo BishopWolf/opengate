@@ -23,7 +23,7 @@ pip install cibuildwheel==3.4.0
 pip install wget colored setuptools
 
 # Install CMAKE and qt6
-sudo apt-get update && sudo apt-get install -y cmake build-essential openssl libssl-dev libssl1.0 libgl1-mesa-dev libqt5x11extras5 '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev git zip unzip qt6-base qt6-base-dev qt6-declarative-dev qt6-imageformats-dev qt6-wayland
+sudo apt-get update && sudo apt-get install -y cmake build-essential openssl libssl-dev libssl1.0 libgl1-mesa-dev libqt5x11extras5 '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev git zip unzip qt6-base-dev qt6-base-dev-tools qt6-tools-dev qt6-tools-dev-tools qt6-image-formats-plugins qt6-wayland
 
 mkdir -p $HOME/software
 mkdir -p $HOME/software/cmake $HOME/software/geant4/src $HOME/software/geant4/bin $HOME/software/itk/src $HOME/software/itk/bin $HOME/software/wheelhouse
