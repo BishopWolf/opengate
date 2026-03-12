@@ -27,7 +27,7 @@ sudo apt-get update && sudo apt-get install -y cmake build-essential
 
 mkdir -p $HOME/software
 mkdir -p $HOME/software/cmake $HOME/software/geant4/src $HOME/software/geant4/bin $HOME/software/itk/src $HOME/software/itk/bin $HOME/software/wheelhouse
-cd $HOME/software/
+
 if [ "${MATRIX_CACHE}" != 'true' ]; then
   # Install geant4
   cd $HOME/software/geant4
@@ -46,7 +46,7 @@ if [ "${MATRIX_CACHE}" != 'true' ]; then
 
   # Install ITK
   cd $HOME/software/itk
-  git clone --branch v5.4.4 https://github.com/InsightSoftwareConsortium/ITK.git --depth 1 src
+  git clone --branch $ITK_VERSION https://github.com/InsightSoftwareConsortium/ITK.git --depth 1 src
   cd bin
   cmake -DCMAKE_CXX_FLAGS=-std=c++17 \
     -DBUILD_TESTING=OFF \
@@ -72,9 +72,7 @@ export CIBW_BUILD_FRONTEND="build[uv]"
 export CIBW_PLATFORM="linux"
 export CIBW_REPAIR_WHEEL_COMMAND_LINUX=""
 export CIBW_SKIP="*-musllinux_*"
-export CIBW_BEFORE_BUILD="
-/opt/python/${PYTHONFOLDER}/bin/pip install colored
-"
+export CIBW_BEFORE_BUILD="python -m pip install colored"
 
 # Run the build without docker
 python -m cibuildwheel --output-dir dist 
