@@ -33,7 +33,6 @@ if [ "${MATRIX_CACHE}" != 'true' ]; then
   cd $HOME/software/geant4
   git clone --branch $GEANT4_VERSION https://github.com/Geant4/geant4.git --depth 1 src
   cd bin
-  . /opt/rh/gcc-toolset-14/enable
   cmake -DCMAKE_CXX_FLAGS=-std=c++17 \
     -DGEANT4_INSTALL_DATA=OFF \
     -DGEANT4_USE_QT=ON \
@@ -49,7 +48,6 @@ if [ "${MATRIX_CACHE}" != 'true' ]; then
   cd $HOME/software/itk
   git clone --branch v5.4.4 https://github.com/InsightSoftwareConsortium/ITK.git --depth 1 src
   cd bin
-  . /opt/rh/gcc-toolset-14/enable
   cmake -DCMAKE_CXX_FLAGS=-std=c++17 \
     -DBUILD_TESTING=OFF \
     -DITK_USE_FFTWD=ON \
