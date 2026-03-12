@@ -14,7 +14,6 @@ set -e
 
 source $GITHUB_WORKSPACE/env_dump.txt
 export PYTHONFOLDER="cp314-cp314"
-mkdir -p $HOME/software
 
 # install uv
 curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -23,35 +22,63 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 pip install cibuildwheel==3.4.0
 pip install wget colored setuptools
 
+# Install CMAKE
+sudo apt-get update && sudo apt-get install -y cmake build-essential
+
+mkdir -p $HOME/software
+mkdir -p $HOME/software/cmake $HOME/software/geant4/src $HOME/software/geant4/bin $HOME/software/itk/src $HOME/software/itk/bin $HOME/software/wheelhouse
+cd $HOME/software/
+if [ "${MATRIX_CACHE}" != 'true' ]; then
+  # Install geant4
+  cd $HOME/software/geant4
+  git clone --branch $GEANT4_VERSION https://github.com/Geant4/geant4.git --depth 1 src
+  cd bin
+  . /opt/rh/gcc-toolset-14/enable
+  cmake -DCMAKE_CXX_FLAGS=-std=c++17 \
+    -DGEANT4_INSTALL_DATA=OFF \
+    -DGEANT4_USE_QT=ON \
+    -DGEANT4_USE_OPENGL_X11=ON \
+    -DGEANT4_USE_QT_QT6=ON \
+    -DGEANT4_BUILD_TLS_MODEL=global-dynamic \
+    -DGEANT4_BUILD_MULTITHREADED=ON \
+    -DGEANT4_USE_GDML=ON \
+    ../src
+  make -j
+
+  # Install ITK
+  cd $HOME/software/itk
+  git clone --branch v5.4.4 https://github.com/InsightSoftwareConsortium/ITK.git --depth 1 src
+  cd bin
+  . /opt/rh/gcc-toolset-14/enable
+  cmake -DCMAKE_CXX_FLAGS=-std=c++17 \
+    -DBUILD_TESTING=OFF \
+    -DITK_USE_FFTWD=ON \
+    -DITK_USE_FFTWF=ON \
+    -DITK_USE_SYSTEM_FFTW:BOOL=ON \
+    ../src
+  make -j
+fi
+
+cd $GITHUB_WORKSPACE
+source $HOME/software/geant4/bin/geant4make.sh
+export CMAKE_PREFIX_PATH=$HOME/software/geant4/bin:$HOME/software/itk/bin/:${CMAKE_PREFIX_PATH}
+cd core
+
 # Setup the environment for the build
 if [ ${MATRIX_OS} == "ubuntu-24.04-arm" ]; then
-  export ARMDOCKER="_arm64"
   export CIBW_ARCHS="aarch64"
-  export CIBW_MANYLINUX_AARCH64_IMAGE=tbaudier/opengate_core:${GEANT4_VERSION}$ARMDOCKER
 else
   export CIBW_ARCHS="x86_64"
-  export CIBW_MANYLINUX_X86_64_IMAGE=tbaudier/opengate_core:${GEANT4_VERSION}
 fi
-export CIBW_BUILD_FRONTEND="build"
+export CIBW_BUILD_FRONTEND="build[uv]"
 export CIBW_PLATFORM="linux"
 export CIBW_REPAIR_WHEEL_COMMAND_LINUX=""
 export CIBW_SKIP="*-musllinux_*"
 export CIBW_BEFORE_BUILD="
-export PATH=/software/cmake/cmake/bin/:${PATH} &&
-export CMAKE_PREFIX_PATH=/software/geant4/bin:/software/itk/bin/:${CMAKE_PREFIX_PATH} &&
-source /software/geant4/bin/geant4make.sh &&
-. /opt/rh/gcc-toolset-14/enable &&
-mkdir opengate_core/plugins &&
-cp -r /lib64/qt6/plugins/platforms/* opengate_core/plugins/ && 
-cp -r /lib64/qt6/plugins/imageformats opengate_core/plugins/ &&
 /opt/python/${PYTHONFOLDER}/bin/pip install colored
 "
 
-# Run the build in docker
-#docker run --rm -e "PYTHONFOLDER=${PYTHONFOLDER}" -v $GITHUB_WORKSPACE:/home tbaudier/opengate_core:${GEANT4_VERSION}$ARMDOCKER /home/.github/workflows/createWheelLinux.sh
-
 # Run the build without docker
-cd $GITHUB_WORKSPACE/core
 python -m cibuildwheel --output-dir dist 
 if [ ${MATRIX_OS} == "ubuntu-24.04-arm" ]; then
   auditwheel repair dist/*.whl -w wheelhouse/ --plat "manylinux_2_34_aarch64"

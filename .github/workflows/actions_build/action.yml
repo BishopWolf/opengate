@@ -66,6 +66,7 @@ runs:
       env:
         MATRIX_OS: ${{ inputs.os }}
         MATRIX_PYTHON_VERSION: ${{ inputs.python-version }}
+        MATRIX_CACHE: ${{ steps.cache_opengate_core_dependencies.outputs.cache-hit }}
       shell: bash -l {0}
       run: |
           export > $GITHUB_WORKSPACE/env_dump.txt
