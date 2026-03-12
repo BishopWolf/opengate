@@ -76,8 +76,8 @@ cd core
 
 # copy qt6 plugins to bundle inside the wheel
 mkdir opengate_core/plugins
-cp -r /usr/lib/x86_64-linux-gnu/qt6/plugins/platforms/* opengate_core/plugins/
-cp -r /usr/lib/x86_64-linux-gnu/qt6/plugins/imageformats opengate_core/plugins/
+cp -r $QT_PLUGIN_DIR/platforms/* opengate_core/plugins/
+cp -r $QT_PLUGIN_DIR/imageformats opengate_core/plugins/
 
 # Setup the environment for the build
 if [ ${MATRIX_OS} == "ubuntu-24.04-arm" ]; then
