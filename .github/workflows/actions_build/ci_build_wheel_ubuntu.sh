@@ -75,9 +75,9 @@ export CMAKE_PREFIX_PATH=$HOME/software/geant4/bin:$HOME/software/itk/bin/:${CMA
 cd core
 
 # copy qt6 plugins to bundle inside the wheel
-mkdir opengate_core/plugins
-cp -r $QT_PLUGIN_DIR/platforms/* opengate_core/plugins/
-cp -r $QT_PLUGIN_DIR/imageformats opengate_core/plugins/
+# mkdir opengate_core/plugins
+# cp -r $QT_PLUGIN_DIR/platforms/* opengate_core/plugins/
+# cp -r $QT_PLUGIN_DIR/imageformats opengate_core/plugins/
 
 # Setup the environment for the build
 if [ ${MATRIX_OS} == "ubuntu-24.04-arm" ]; then
@@ -99,5 +99,5 @@ else
   auditwheel repair dist/*.whl -w wheelhouse/ --plat "manylinux_2_34_x86_64"
 fi
 rm -rf dist
-cp -r wheelhouse/* $GITHUB_WORKSPACE
-#sudo chown -R runner:docker $GITHUB_WORKSPACE/dist
+mkdir -p $GITHUB_WORKSPACE/dist
+cp -r wheelhouse/. $GITHUB_WORKSPACE/dist
