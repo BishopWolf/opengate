@@ -85,19 +85,27 @@ if [ ${MATRIX_OS} == "ubuntu-24.04-arm" ]; then
 else
   export CIBW_ARCHS="x86_64"
 fi
-export CIBW_BUILD_FRONTEND="build[uv]"
 export CIBW_PLATFORM="linux"
 export CIBW_REPAIR_WHEEL_COMMAND_LINUX=""
 export CIBW_SKIP="*-musllinux_*"
 export CIBW_BEFORE_BUILD="python -m pip install colored"
 
+# expose external libraries to build environment
+export CIBW_ENVIRONMENT="
+CMAKE_PREFIX_PATH=$HOME/software/geant4/install:$HOME/software/itk/install
+Geant4_DIR=$HOME/software/geant4/install/lib/cmake/Geant4
+ITK_DIR=$HOME/software/itk/install/lib/cmake/ITK
+LD_LIBRARY_PATH=$HOME/software/geant4/install/lib:$HOME/software/itk/install/lib
+QT_PLUGIN_PATH=$QT_PLUGIN_DIR
+QT_QPA_PLATFORM_PLUGIN_PATH=$QT_PLUGIN_DIR/platforms
+"
+
 # Run the build without docker
 python -m cibuildwheel --output-dir dist 
-if [ ${MATRIX_OS} == "ubuntu-24.04-arm" ]; then
-  auditwheel repair dist/*.whl -w wheelhouse/ --plat "manylinux_2_34_aarch64"
-else
-  auditwheel repair dist/*.whl -w wheelhouse/ --plat "manylinux_2_34_x86_64"
-fi
+for whl in wheelhouse/*.whl; do
+  auditwheel repair $whl -w wheelhouse/ --plat manylinux_2_34_$CIBW_ARCHS
+done
+
 rm -rf dist
 mkdir -p $GITHUB_WORKSPACE/dist
 cp -r wheelhouse/. $GITHUB_WORKSPACE/dist
