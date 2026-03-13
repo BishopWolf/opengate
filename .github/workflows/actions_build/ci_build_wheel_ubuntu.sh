@@ -22,10 +22,10 @@ export CIBW_PLATFORM="linux"
 export CIBW_SKIP="*-musllinux_*"
 export CIBW_BEFORE_BUILD='
 python -m pip install colored &&
-mkdir opengate_core/plugins &&
+mkdir -p opengate_core/plugins &&
 export QT_PLUGIN_DIR=$(qtpaths6 --plugin-dir) &&
-cp -r $QT_PLUGIN_DIR/platforms/* opengate_core/plugins/ &&
-cp -r $QT_PLUGIN_DIR/imageformats opengate_core/plugins/ &&
+cp -r -n $QT_PLUGIN_DIR/platforms/* opengate_core/plugins/ &&
+cp -r -n $QT_PLUGIN_DIR/imageformats opengate_core/plugins/ &&
 source /software/geant4/bin/geant4make.sh &&
 . /opt/rh/gcc-toolset-14/enable
 '
@@ -43,11 +43,3 @@ cd core
 python -m cibuildwheel --output-dir dist 
 mkdir -p $GITHUB_WORKSPACE/dist
 mv dist/*.whl $GITHUB_WORKSPACE/dist/ 
-
-#for whl in dist/*.whl; do
-#  auditwheel repair $whl -w wheelhouse/ --plat manylinux_2_34_$CIBW_ARCHS
-#done
-
-#rm -rf dist
-#mkdir -p $GITHUB_WORKSPACE/dist
-#cp -r wheelhouse/. $GITHUB_WORKSPACE/dist
