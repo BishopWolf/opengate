@@ -20,23 +20,25 @@ fi
 export CIBW_PLATFORM="linux"
 # export CIBW_REPAIR_WHEEL_COMMAND_LINUX=""
 export CIBW_SKIP="*-musllinux_*"
-export CIBW_BEFORE_BUILD="
+export CIBW_BEFORE_BUILD='
 python -m pip install colored &&
 mkdir opengate_core/plugins &&
-export QT_PLUGIN_DIR=\$(qtpaths6 --plugin-dir) &&
-cp -r \$QT_PLUGIN_DIR/platforms/* opengate_core/plugins/ &&
-cp -r \$QT_PLUGIN_DIR/imageformats opengate_core/plugins/
-"
+export QT_PLUGIN_DIR=$(qtpaths6 --plugin-dir) &&
+cp -r $QT_PLUGIN_DIR/platforms/* opengate_core/plugins/ &&
+cp -r $QT_PLUGIN_DIR/imageformats opengate_core/plugins/ &&
+source /software/geant4/bin/geant4make.sh &&
+. /opt/rh/gcc-toolset-14/enable
+'
 
 # expose external libraries to build environment
-export CIBW_ENVIRONMENT="
-CMAKE_PREFIX_PATH=/software/geant4/install:/software/itk/install
-Geant4_DIR=/software/geant4/install/lib/cmake/Geant4
-ITK_DIR=/software/itk/install/lib/cmake/ITK
-LD_LIBRARY_PATH=/software/geant4/install/lib:/software/itk/install/lib
-"
+export CIBW_ENVIRONMENT='
+CMAKE_PREFIX_PATH=/software/geant4/bin:/software/itk/bin/
+Geant4_DIR=/software/geant4/lib/cmake/Geant4
+ITK_DIR=/software/itk/lib/cmake/ITK
+LD_LIBRARY_PATH=/software/geant4/lib:/software/itk/lib
+'
 
-# Run the build without docker
+# Run the build in custom docker
 cd core
 python -m cibuildwheel --output-dir dist 
 mkdir -p $GITHUB_WORKSPACE/dist
