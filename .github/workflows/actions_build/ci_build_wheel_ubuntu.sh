@@ -4,9 +4,6 @@ set -e
 source $GITHUB_WORKSPACE/env_dump.txt
 export PYTHONFOLDER="cp314-cp314"
 
-# install uv
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
 # install cibuildwheel
 pip install cibuildwheel==3.4.0
 pip install wget colored setuptools
@@ -40,6 +37,7 @@ LD_LIBRARY_PATH=/software/geant4/install/lib:/software/itk/install/lib
 "
 
 # Run the build without docker
+cd core
 python -m cibuildwheel --output-dir dist 
 mkdir -p $GITHUB_WORKSPACE/dist
 mv dist/*.whl $GITHUB_WORKSPACE/dist/ 
