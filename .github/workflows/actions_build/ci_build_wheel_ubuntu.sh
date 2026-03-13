@@ -21,14 +21,14 @@ else
   export CIBW_MANYLINUX_X86_64_IMAGE=tbaudier/opengate_core:${GEANT4_VERSION}
 fi
 export CIBW_PLATFORM="linux"
-export CIBW_REPAIR_WHEEL_COMMAND_LINUX=""
+# export CIBW_REPAIR_WHEEL_COMMAND_LINUX=""
 export CIBW_SKIP="*-musllinux_*"
 export CIBW_BEFORE_BUILD="
 python -m pip install colored &&
 mkdir opengate_core/plugins &&
-export QT_PLUGIN_DIR=$(qtpaths6 --plugin-dir) &&
-cp -r $QT_PLUGIN_DIR/platforms/* opengate_core/plugins/ &&
-cp -r $QT_PLUGIN_DIR/imageformats opengate_core/plugins/
+export QT_PLUGIN_DIR=\$(qtpaths6 --plugin-dir) &&
+cp -r \$QT_PLUGIN_DIR/platforms/* opengate_core/plugins/ &&
+cp -r \$QT_PLUGIN_DIR/imageformats opengate_core/plugins/
 "
 
 # expose external libraries to build environment
@@ -41,10 +41,13 @@ LD_LIBRARY_PATH=/software/geant4/install/lib:/software/itk/install/lib
 
 # Run the build without docker
 python -m cibuildwheel --output-dir dist 
-for whl in dist/*.whl; do
-  auditwheel repair $whl -w wheelhouse/ --plat manylinux_2_34_$CIBW_ARCHS
-done
-
-rm -rf dist
 mkdir -p $GITHUB_WORKSPACE/dist
-cp -r wheelhouse/. $GITHUB_WORKSPACE/dist
+mv dist/*.whl $GITHUB_WORKSPACE/dist/ 
+
+#for whl in dist/*.whl; do
+#  auditwheel repair $whl -w wheelhouse/ --plat manylinux_2_34_$CIBW_ARCHS
+#done
+
+#rm -rf dist
+#mkdir -p $GITHUB_WORKSPACE/dist
+#cp -r wheelhouse/. $GITHUB_WORKSPACE/dist
