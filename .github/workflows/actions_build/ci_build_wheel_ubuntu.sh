@@ -1,17 +1,6 @@
 #!/bin/bash
 set -e
 
-# Install docker to build the linux wheel on ubuntu 24.04
-#sudo apt-get update && sudo apt-get install ca-certificates curl gnupg
-#sudo install -m 0755 -d /etc/apt/keyrings
-#curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-#sudo chmod a+r /etc/apt/keyrings/docker.gpg
-#echo \
-#  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-#  "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
-#  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-#sudo apt-get update && sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-
 source $GITHUB_WORKSPACE/env_dump.txt
 export PYTHONFOLDER="cp314-cp314"
 
@@ -36,8 +25,9 @@ export CIBW_SKIP="*-musllinux_*"
 export CIBW_BEFORE_BUILD="
 python -m pip install colored
 mkdir opengate_core/plugins
-cp -r /lib64/qt6/plugins/platforms/* opengate_core/plugins/
-cp -r /lib64/qt6/plugins/imageformats opengate_core/plugins/
+export QT_PLUGIN_DIR=$(qtpaths6 --plugin-dir)
+cp -r $QT_PLUGIN_DIR/platforms/* opengate_core/plugins/
+cp -r $QT_PLUGIN_DIR/imageformats opengate_core/plugins/
 "
 
 # expose external libraries to build environment
