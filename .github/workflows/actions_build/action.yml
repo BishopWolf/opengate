@@ -56,11 +56,19 @@ runs:
           miniconda-version: "latest"
           auto-update-conda: true
           activate-environment: opengate_core
-          python-version: ${{ inputs.python-version }}
+          python-version: '3.14'
     - name: Set up Homebrew
       if: (inputs.os == 'macos-15') || (inputs.os == 'macos-15-intel')
       id: set-up-homebrew
-      uses: Homebrew/actions/setup-homebrew@master
+      uses: Homebrew/actions/setup-homebrew@main
+    - name: Cache Homebrew prefix
+      if: (inputs.os == 'macos-15') || (inputs.os == 'macos-15-intel')
+      id: cache-homebrew
+      uses: Homebrew/actions/cache-homebrew-prefix@main
+      with:
+        install: wget ccache fftw libomp xquartz xerces-c
+        uninstall: true
+        workflow-key: ${{ runner.os }}-${{ steps.get-os-version.outputs.release }}_geant4_${{ env.GEANT4_VERSION }}_itk_${{ env.ITK_VERSION }}_homebrew
     - name: Create opengate_core Wheel Linux
       if: (inputs.os == 'ubuntu-24.04') || (inputs.os == 'ubuntu-24.04-arm')
       env:
