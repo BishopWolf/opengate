@@ -61,14 +61,14 @@ runs:
       if: (inputs.os == 'macos-15') || (inputs.os == 'macos-15-intel')
       id: set-up-homebrew
       uses: Homebrew/actions/setup-homebrew@main
-    - name: Cache Homebrew prefix
-      if: (inputs.os == 'macos-15') || (inputs.os == 'macos-15-intel')
-      id: cache-homebrew
-      uses: Homebrew/actions/cache-homebrew-prefix@main
-      with:
-        install: wget ccache fftw libomp xquartz xerces-c
-        uninstall: true
-        workflow-key: ${{ runner.os }}-${{ steps.get-os-version.outputs.release }}_geant4_${{ env.GEANT4_VERSION }}_itk_${{ env.ITK_VERSION }}_homebrew
+    # - name: Cache Homebrew prefix
+    #   if: (inputs.os == 'macos-15') || (inputs.os == 'macos-15-intel')
+    #   id: cache-homebrew
+    #   uses: Homebrew/actions/cache-homebrew-prefix@main
+    #   with:
+    #     install: wget ccache fftw libomp xquartz xerces-c
+    #     uninstall: true
+    #     workflow-key: ${{ runner.os }}-${{ steps.get-os-version.outputs.release }}_geant4_${{ env.GEANT4_VERSION }}_itk_${{ env.ITK_VERSION }}_homebrew
     - name: Create opengate_core Wheel Linux
       if: (inputs.os == 'ubuntu-24.04') || (inputs.os == 'ubuntu-24.04-arm')
       env:
@@ -84,7 +84,7 @@ runs:
         MATRIX_OS: ${{ inputs.os }}
         MATRIX_PYTHON_VERSION: ${{ inputs.python-version }}
         MATRIX_CACHE: ${{ steps.cache_opengate_core_dependencies.outputs.cache-hit }}
-        BREW_CACHE: ${{ steps.cache_homebrew.outputs.cache-hit }}
+        # BREW_CACHE: ${{ steps.cache_homebrew.outputs.cache-hit }}
       shell: bash -l {0}
       run: |
           export > $GITHUB_WORKSPACE/env_dump.txt
