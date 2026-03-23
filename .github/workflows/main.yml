@@ -63,11 +63,6 @@ jobs:
       matrix:
         os: [ubuntu-24.04, macos-15, windows-2025]
         python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
-        exclude:
-          - os: macos-15
-            python-version: '3.10'
-          - os: windows-2025
-            python-version: '3.10'
     steps:
     - name: Checkout github repo
       uses: actions/checkout@v6
@@ -283,11 +278,6 @@ jobs:
       matrix:
         os: [ubuntu-24.04, macos-15, windows-2025]
         python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
-        exclude:
-          - os: macos-15
-            python-version: '3.10'
-          - os: windows-2025
-            python-version: '3.10'
     steps:
     - name: Checkout github repo
       uses: actions/checkout@v6
