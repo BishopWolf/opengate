@@ -2,14 +2,23 @@
 set -e
 
 source $GITHUB_WORKSPACE/env_dump.txt
-brew install --force --verbose --overwrite \
-             ccache \
-             fftw \
-             libomp \
-             xquartz \
-             xerces-c || true
-brew uninstall --ignore-dependencies libxext
-brew uninstall --ignore-dependencies libx11
+
+if [ "${BREW_CACHE}" != 'true' ]; then
+    brew install --force --verbose --overwrite \
+                ccache \
+                fftw \
+                libomp \
+                xquartz \
+                xerces-c || true
+    if [[ ${MATRIX_OS} == "macos-15-intel" ]]; then
+        conda install conda-forge::qt6-main conda-forge::qt6-3d
+    else
+        brew install qt
+    fi
+    brew uninstall --ignore-dependencies libxext
+    brew uninstall --ignore-dependencies libx11
+fi
+
 export LDFLAGS="-L/usr/local/opt/llvm/lib"
 export CPPFLAGS="-I/usr/local/opt/llvm/include -fopenmp"
 conda info
@@ -19,11 +28,6 @@ pip install wget colored
 # install cibuildwheel
 pip install cibuildwheel[uv]==3.4.0
 
-if [[ ${MATRIX_OS} == "macos-15-intel" ]]; then
-    conda install conda-forge::qt6-main conda-forge::qt6-3d
-else
-    brew install qt
-fi
 mkdir -p $HOME/software
 if [ "${MATRIX_CACHE}" != 'true' ]; then
     cd $HOME/software
