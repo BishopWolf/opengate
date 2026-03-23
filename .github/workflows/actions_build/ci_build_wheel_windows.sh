@@ -13,12 +13,7 @@ python --version
 export PATH="/usr/local/miniconda/envs/opengate_core/bin/:$PATH"
 pip install wget colored delvewheel
 
-# install cibuildwheel
-if [[ ${MATRIX_PYTHON_VERSION} == "3.10" ]]; then
-    pip install cibuildwheel[uv]==2.23.4
-else
-    pip install cibuildwheel[uv]==3.4.0
-fi
+pip install cibuildwheel[uv]==3.4.0
 
 # For windows 2025, Need to add the certifi CA bundle to avoid SSL errors when downloading dependencies during the build. This is a workaround for cibuildwheel which does not handle this properly on Windows.
 python - << 'EOF'

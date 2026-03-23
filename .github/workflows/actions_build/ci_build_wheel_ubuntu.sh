@@ -3,14 +3,8 @@ set -e
 
 source $GITHUB_WORKSPACE/env_dump.txt
 
-# install cibuildwheel
-if [[ ${MATRIX_PYTHON_VERSION} == "3.10" ]]; then
-    pip install cibuildwheel[uv]==2.23.4
-else
-    pip install cibuildwheel[uv]==3.4.0
-fi
-
 pip install wget colored setuptools
+pip install cibuildwheel[uv]==3.4.0
 
 # Setup the environment for the build
 if [ ${MATRIX_OS} == "ubuntu-24.04-arm" ]; then

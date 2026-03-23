@@ -17,11 +17,8 @@ conda list
 export PATH="/usr/local/miniconda/envs/opengate_core/bin/:$PATH"
 pip install wget colored
 # install cibuildwheel
-if [[ ${MATRIX_PYTHON_VERSION} == "3.10" ]]; then
-    pip install cibuildwheel[uv]==2.23.4
-else
-    pip install cibuildwheel[uv]==3.4.0
-fi
+pip install cibuildwheel[uv]==3.4.0
+
 if [[ ${MATRIX_OS} == "macos-15-intel" ]]; then
     conda install conda-forge::qt6-main conda-forge::qt6-3d
 else
