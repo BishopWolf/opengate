@@ -5,9 +5,9 @@ source $GITHUB_WORKSPACE/env_dump.txt
 mkdir -p $HOME/software
 
 brew install python
-python3 -m venv $HOME/softwareopengate_core
-source $HOME/softwareopengate_core/bin/activate
-$HOME/softwareopengate_core/bin/python3 -m pip install wget colored delocate cibuildwheel[uv]==3.4.0
+python3 -m venv $HOME/software/opengate_core
+source $HOME/software/opengate_core/bin/activate
+$HOME/software/opengate_core/bin/pip install wget colored delocate cibuildwheel[uv]==3.4.0
 
 export LDFLAGS="-L/usr/local/opt/llvm/lib"
 export CPPFLAGS="-I/usr/local/opt/llvm/include -fopenmp"
@@ -65,7 +65,7 @@ if [[ ${MATRIX_OS} == "macos-15-intel" ]]; then
 else
     export DYLD_LIBRARY_PATH=$HOME/software/geant4/bin/BuildProducts/lib:/opt/homebrew/share/qt/plugins/platforms/:/opt/X11/lib/:$DYLD_LIBRARY_PATH:/opt/homebrew/lib
     export CIBW_ARCHS_MACOS="arm64"
-    $HOME/softwareopengate_core/bin/python3 -c "import os,delocate; print(os.path.join(os.path.dirname(delocate.__file__), 'tools.py'));quit()" | xargs -I{} sed -i."" "s/first, /input.pop('i386',None); first, /g" {}
+    $HOME/software/opengate_core/bin/python -c "import os,delocate; print(os.path.join(os.path.dirname(delocate.__file__), 'tools.py'));quit()" | xargs -I{} sed -i."" "s/first, /input.pop('i386',None); first, /g" {}
 fi
 if [[ ${MATRIX_PYTHON_VERSION} == "3.10" ]]; then
   export CIBW_BUILD="cp310-*"
@@ -79,7 +79,7 @@ elif [[ ${MATRIX_PYTHON_VERSION} == "3.14" ]]; then
   export CIBW_BUILD="cp314-*"
 fi
 
-$HOME/softwareopengate_core/bin/python3 -m cibuildwheel --output-dir dist
+$HOME/software/opengate_core/bin/python -m cibuildwheel --output-dir dist
 cd dist
 if [[ ${MATRIX_OS} == "macos-15-intel" ]]; then
     find . -name '*whl' -exec bash -c ' mv $0 ${0/macosx_15_0/macosx_10_9}' {} \;
