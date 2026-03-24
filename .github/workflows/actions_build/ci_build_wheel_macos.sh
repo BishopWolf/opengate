@@ -8,9 +8,9 @@ export LDFLAGS="-L/usr/local/opt/llvm/lib"
 export CPPFLAGS="-I/usr/local/opt/llvm/include -fopenmp"
 
 export PATH="/opt/homebrew/bin/:$PATH"
-pip3 install wget colored delocate
+pip3 install wget colored delocate --break-system-packages
 # install cibuildwheel
-pip3 install cibuildwheel[uv]==3.4.0
+pip3 install cibuildwheel[uv]==3.4.0 --break-system-packages
 
 mkdir -p $HOME/software
 if [ "${MATRIX_CACHE}" != 'true' ]; then
