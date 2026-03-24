@@ -7,7 +7,7 @@ brew install python
 export LDFLAGS="-L/usr/local/opt/llvm/lib"
 export CPPFLAGS="-I/usr/local/opt/llvm/include -fopenmp"
 
-export PATH="/usr/local/miniconda/envs/opengate_core/bin/:$PATH"
+export PATH="/opt/homebrew/bin/:$PATH"
 pip install wget colored delocate
 # install cibuildwheel
 pip install cibuildwheel[uv]==3.4.0
