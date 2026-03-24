@@ -4,12 +4,7 @@ set -e
 source $GITHUB_WORKSPACE/env_dump.txt
 
 if [ "${BREW_CACHE}" != 'true' ]; then
-    brew install --force --verbose --overwrite \
-                #ccache \
-               # fftw \
-               # libomp \
-               # xerces-c \
-                xquartz || true
+    # brew install --force --verbose --overwrite xquartz || true
     brew uninstall --ignore-dependencies libxext
     brew uninstall --ignore-dependencies libx11
 fi
