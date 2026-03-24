@@ -2,6 +2,7 @@
 set -e
 
 source $GITHUB_WORKSPACE/env_dump.txt
+brew install python
 
 export LDFLAGS="-L/usr/local/opt/llvm/lib"
 export CPPFLAGS="-I/usr/local/opt/llvm/include -fopenmp"
