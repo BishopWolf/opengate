@@ -8,10 +8,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Set up Python 3.14
-      uses: actions/setup-python@v6
-      with:
-        python-version: '3.14'
     - name: Get OS version
       id: get-os-version
       shell: bash -l {0}
@@ -43,6 +39,11 @@ runs:
             fi
             echo "release=${varOS}" >> $GITHUB_OUTPUT
         fi
+    - name: Set up Python 3.14 in Linux only, handled by Homebrew in MacOS and Conda in Windows
+      if: (inputs.os == 'ubuntu-24.04') || (inputs.os == 'ubuntu-24.04-arm')
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.14'
     - name: Set up Homebrew
       if: (inputs.os == 'macos-15') || (inputs.os == 'macos-15-intel')
       id: set-up-homebrew
@@ -52,7 +53,7 @@ runs:
       id: cache-homebrew
       uses: Homebrew/actions/cache-homebrew-prefix@main
       with:
-        install: wget ccache fftw libomp xerces-c qt
+        install: wget ccache fftw libomp xerces-c qt cmake python
         uninstall: true
         workflow-key: ${{ runner.os }}-${{ steps.get-os-version.outputs.release }}_geant4_${{ env.GEANT4_VERSION }}_itk_${{ env.ITK_VERSION }}_homebrew
     - name: Cache modules
@@ -62,8 +63,9 @@ runs:
         path: ~/software
         key: ${{ runner.os }}-${{ steps.get-os-version.outputs.release }}_geant4_${{ env.GEANT4_VERSION }}_itk_${{ env.ITK_VERSION }}_build
         restore-keys: ${{ runner.os }}-${{ steps.get-os-version.outputs.release }}_geant4_${{ env.GEANT4_VERSION }}_itk_${{ env.ITK_VERSION }}_build
-    - uses: conda-incubator/setup-miniconda@v3
+    - name: Set up Miniconda in Windows only, handled by Homebrew in MacOS and setup-python in Linux
       if: (inputs.os == 'windows-2025') || (inputs.os == 'windows-11-arm')
+      uses: conda-incubator/setup-miniconda@v3
       with:
           miniconda-version: "latest"
           auto-update-conda: true
