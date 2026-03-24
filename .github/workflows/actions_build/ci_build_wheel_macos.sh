@@ -2,6 +2,11 @@
 set -e
 
 source $GITHUB_WORKSPACE/env_dump.txt
+
+# Ensure python is installed
+brew install python@${MATRIX_PYTHON_VERSION} || true
+brew link --overwrite python@${MATRIX_PYTHON_VERSION}
+
 mkdir -p $HOME/software
 
 pip install wget colored delocate 
@@ -16,7 +21,6 @@ export LDFLAGS="-L/usr/local/opt/llvm/lib"
 export CPPFLAGS="-I/usr/local/opt/llvm/include -fopenmp"
 
 export PATH="/opt/homebrew/bin/:$PATH"
-mkdir -p /Library/Frameworks/Python.framework/Versions/${MATRIX_PYTHON_VERSION}/bin
 
 if [ "${MATRIX_CACHE}" != 'true' ]; then
     cd $HOME/software
