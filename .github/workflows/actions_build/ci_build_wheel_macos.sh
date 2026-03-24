@@ -4,17 +4,19 @@ set -e
 source $GITHUB_WORKSPACE/env_dump.txt
 mkdir -p $HOME/software
 
-brew install python
-python3 -m venv $HOME/software/opengate_core
-source $HOME/software/opengate_core/bin/activate
-echo "$HOME/software/opengate_core/bin" >> $GITHUB_PATH
-pip install wget colored delocate cibuildwheel[uv]==3.4.0
-mkdir -p /Library/Frameworks/Python.framework/Versions/${MATRIX_PYTHON_VERSION}/bin
+pip install wget colored delocate 
+
+if [[ ${MATRIX_PYTHON_VERSION} == "3.10" ]]; then
+    pip install cibuildwheel[uv]==2.23.4
+else
+    pip install cibuildwheel[uv]==3.4.0
+fi
 
 export LDFLAGS="-L/usr/local/opt/llvm/lib"
 export CPPFLAGS="-I/usr/local/opt/llvm/include -fopenmp"
 
 export PATH="/opt/homebrew/bin/:$PATH"
+mkdir -p /Library/Frameworks/Python.framework/Versions/${MATRIX_PYTHON_VERSION}/bin
 
 if [ "${MATRIX_CACHE}" != 'true' ]; then
     cd $HOME/software

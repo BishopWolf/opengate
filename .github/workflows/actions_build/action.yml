@@ -63,7 +63,7 @@ runs:
         path: ~/software
         key: ${{ runner.os }}-${{ steps.get-os-version.outputs.release }}_geant4_${{ env.GEANT4_VERSION }}_itk_${{ env.ITK_VERSION }}_build
         restore-keys: ${{ runner.os }}-${{ steps.get-os-version.outputs.release }}_geant4_${{ env.GEANT4_VERSION }}_itk_${{ env.ITK_VERSION }}_build
-    - name: Set up Miniconda in Windows only, handled by Homebrew in MacOS and setup-python in Linux
+    - name: Set up Miniconda in Windows with pinned python 3.14
       if: (inputs.os == 'windows-2025') || (inputs.os == 'windows-11-arm')
       uses: conda-incubator/setup-miniconda@v3
       with:
@@ -71,6 +71,14 @@ runs:
           auto-update-conda: true
           activate-environment: opengate_core
           python-version: '3.14'
+    - name: Set up Miniconda in MacOS with variable python version
+      if: (inputs.os == 'macos-15') || (inputs.os == 'macos-15-intel')
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+          miniconda-version: "latest"
+          auto-update-conda: true
+          activate-environment: opengate_core
+          python-version: ${{ inputs.python-version }}
     - name: Create opengate_core Wheel Linux
       if: (inputs.os == 'ubuntu-24.04') || (inputs.os == 'ubuntu-24.04-arm')
       env:
