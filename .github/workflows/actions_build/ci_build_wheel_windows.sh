@@ -5,11 +5,22 @@ source $GITHUB_WORKSPACE/env_dump.txt
 source $CONDA/Scripts/activate opengate_core
 conda info
 conda install cmake==3.31.2
-cmake --version
-# conda install openssl==3.0.19
+echo ${MATRIX_OS}
+if [[ ${MATRIX_OS} == "windows-11-arm" ]]; then
+    # On Windows ARM qt6 is not supported
+    export CIBW_ARCHS="ARM64"
+    export GEANT4_USE_QT=OFF
+    export GEANT4_USE_OPENGL_X11=ON
+    export GEANT4_USE_QT_QT6=OFF
+else
+    export CIBW_ARCHS="AMD64"
+    export GEANT4_USE_QT=ON
+    export GEANT4_USE_OPENGL_X11=OFF
+    export GEANT4_USE_QT_QT6=ON
+    conda install conda-forge::qt6-main conda-forge::qt6-3d
+fi
+
 conda list
-which python
-python --version
 export PATH="/usr/local/miniconda/envs/opengate_core/bin/:$PATH"
 pip install wget colored delvewheel
 
@@ -36,6 +47,9 @@ if [ "${MATRIX_CACHE}" != 'true' ]; then
     cd bin
     cmake -DGEANT4_INSTALL_DATA=ON \
           -DGEANT4_INSTALL_DATADIR=$HOME/software/geant4/data \
+          -DGEANT4_USE_QT=${GEANT4_USE_QT} \
+          -DGEANT4_USE_OPENGL_X11=${GEANT4_USE_OPENGL_X11} \
+          -DGEANT4_USE_QT_QT6=${GEANT4_USE_QT_QT6} \
           -DGEANT4_BUILD_MULTITHREADED=ON \
           ../src
     cmake --build . --config Release
@@ -54,6 +68,9 @@ cd $GITHUB_WORKSPACE
 source $HOME/software/geant4/bin/geant4make.sh
 export CMAKE_PREFIX_PATH=$HOME/software/geant4/bin:$HOME/software/itk/bin/:${CMAKE_PREFIX_PATH}
 cd core
+mkdir opengate_core/plugins
+cp -r /usr/local/miniconda/envs/opengate_core/lib/qt6/plugins/platforms/* opengate_core/plugins/
+cp -r /usr/local/miniconda/envs/opengate_core/lib/qt6/plugins/imageformats/* opengate_core/plugins/
 if [[ ${MATRIX_PYTHON_VERSION} == "3.10" ]]; then
   export CIBW_BUILD="cp310-*"
 elif [[ ${MATRIX_PYTHON_VERSION} == "3.11" ]]; then
@@ -64,12 +81,6 @@ elif [[ ${MATRIX_PYTHON_VERSION} == "3.13" ]]; then
   export CIBW_BUILD="cp313-*"
 elif [[ ${MATRIX_PYTHON_VERSION} == "3.14" ]]; then
   export CIBW_BUILD="cp314-*"
-fi
-echo ${MATRIX_OS}
-if [[ ${MATRIX_OS} == "windows-11-arm" ]]; then
-    export CIBW_ARCHS="ARM64"
-else
-    export CIBW_ARCHS="AMD64"
 fi
 export CIBW_BUILD_FRONTEND="build[uv]"
 export CIBW_SKIP="*t*"

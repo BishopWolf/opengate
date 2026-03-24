@@ -58,8 +58,8 @@ runs:
         path: ~/software
         key: ${{ runner.os }}-${{ steps.get-os-version.outputs.release }}_geant4_${{ env.GEANT4_VERSION }}_itk_${{ env.ITK_VERSION }}_build
         restore-keys: ${{ runner.os }}-${{ steps.get-os-version.outputs.release }}_geant4_${{ env.GEANT4_VERSION }}_itk_${{ env.ITK_VERSION }}_build
-    - name: Set up Python 3.14 in Linux only, handled by Homebrew in MacOS and Conda in Windows
-      if: (inputs.os == 'ubuntu-24.04') || (inputs.os == 'ubuntu-24.04-arm')
+    - name: Set up Python 3.14 in Linux and MacOS, handled by Conda in Windows
+      if: (inputs.os == 'ubuntu-24.04') || (inputs.os == 'ubuntu-24.04-arm') || (inputs.os == 'macos-15') || (inputs.os == 'macos-15-intel')
       uses: actions/setup-python@v6
       with:
         python-version: '3.14'
