@@ -5,7 +5,7 @@ source $GITHUB_WORKSPACE/env_dump.txt
 mkdir -p $HOME/software
 
 brew install python
-python3 -m venv $HOME/software/opengate_core --python ${MATRIX_PYTHON_VERSION}
+python3 -m venv $HOME/software/opengate_core
 source $HOME/software/opengate_core/bin/activate
 echo "$HOME/software/opengate_core/bin" >> $GITHUB_PATH
 pip install wget colored delocate cibuildwheel[uv]==3.4.0
