@@ -5,8 +5,7 @@ source $GITHUB_WORKSPACE/env_dump.txt
 
 export LDFLAGS="-L/usr/local/opt/llvm/lib"
 export CPPFLAGS="-I/usr/local/opt/llvm/include -fopenmp"
-conda info
-conda list
+
 export PATH="/usr/local/miniconda/envs/opengate_core/bin/:$PATH"
 pip install wget colored delocate
 # install cibuildwheel
