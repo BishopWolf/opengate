@@ -24,7 +24,7 @@ export CPPFLAGS="-I/usr/local/opt/llvm/include -fopenmp"
 conda info
 conda list
 export PATH="/usr/local/miniconda/envs/opengate_core/bin/:$PATH"
-pip install wget colored
+pip install wget colored delocate
 # install cibuildwheel
 pip install cibuildwheel[uv]==3.4.0
 
