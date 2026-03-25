@@ -18,6 +18,8 @@ else
     export GEANT4_USE_OPENGL_X11=OFF
     export GEANT4_USE_QT_QT6=ON
     conda install conda-forge::qt6-main conda-forge::qt6-3d
+    export QT_PLUGIN_DIR=$(qtpaths6 --plugin-dir)
+    echo "QT_PLUGIN_DIR is $QT_PLUGIN_DIR"
 fi
 
 conda list
@@ -69,8 +71,8 @@ source $HOME/software/geant4/bin/geant4make.sh
 export CMAKE_PREFIX_PATH=$HOME/software/geant4/bin:$HOME/software/itk/bin/:${CMAKE_PREFIX_PATH}
 cd core
 mkdir opengate_core/plugins
-cp -r /usr/local/miniconda/envs/opengate_core/lib/qt6/plugins/platforms/* opengate_core/plugins/
-cp -r /usr/local/miniconda/envs/opengate_core/lib/qt6/plugins/imageformats/* opengate_core/plugins/
+cp -r $QT_PLUGIN_DIR/platforms/* opengate_core/plugins/
+cp -r $QT_PLUGIN_DIR/imageformats/* opengate_core/plugins/
 if [[ ${MATRIX_PYTHON_VERSION} == "3.10" ]]; then
   export CIBW_BUILD="cp310-*"
 elif [[ ${MATRIX_PYTHON_VERSION} == "3.11" ]]; then
