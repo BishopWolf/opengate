@@ -25,8 +25,9 @@ conda info
 conda list
 echo "ls $CONDA/envs/opengate_core/Library/bin/"
 ls $CONDA/envs/opengate_core/Library/bin/
-echo "ls $QT_PLUGIN_DIR"
-ls $QT_PLUGIN_DIR
+echo 'find $CONDA/envs/opengate_core/ -type f -iname "qt6*.dll"'
+find $CONDA/envs/opengate_core/ -type f -iname "qt6*.dll"
+
 pip install wget colored delvewheel
 
 pip install cibuildwheel[uv]==3.4.0
