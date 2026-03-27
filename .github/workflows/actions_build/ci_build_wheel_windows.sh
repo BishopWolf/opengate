@@ -3,14 +3,6 @@ set -e
 
 source $GITHUB_WORKSPACE/env_dump.txt
 source $CONDA/Scripts/activate opengate_core
-echo "ls $CONDA/Library/bin/"
-ls $CONDA/Library/bin/
-echo "ls $CONDA/envs/opengate_core/"
-ls $CONDA/envs/opengate_core/
-echo "ls $CONDA/envs/opengate_core/Library/bin/"
-ls $CONDA/envs/opengate_core/Library/bin/
-echo "ls $CONDA/envs/opengate_core/Scripts/"
-ls $CONDA/envs/opengate_core/Scripts/
 conda install cmake==3.31.2
 export PATH="$CONDA/envs/opengate_core/:$CONDA/envs/opengate_core/Library/bin/:$PATH"
 echo ${MATRIX_OS}
@@ -31,14 +23,10 @@ else
 fi
 conda info
 conda list
-echo "ls $CONDA/envs/opengate_core/"
-ls $CONDA/envs/opengate_core/
-echo "ls $CONDA/envs/opengate_core/Library/bin/"
-ls $CONDA/envs/opengate_core/Library/bin/
-echo "ls $CONDA/envs/opengate_core/libs/"
-ls $CONDA/envs/opengate_core/libs/
-echo "ls $CONDA/envs/opengate_core/Lib/"
-ls $CONDA/envs/opengate_core/Lib/
+echo "ls $CONDA/envs/opengate_core/Library/bin/Qt6*.dll"
+ls $CONDA/envs/opengate_core/Library/bin/Qt6*.dll
+echo "ls $QT_PLUGIN_DIR"
+ls $QT_PLUGIN_DIR
 pip install wget colored delvewheel
 
 pip install cibuildwheel[uv]==3.4.0
@@ -87,8 +75,7 @@ export CMAKE_PREFIX_PATH=$HOME/software/geant4/bin:$HOME/software/itk/bin/:${CMA
 cd core
 mkdir opengate_core/plugins
 if [[ ${MATRIX_OS} != "windows-11-arm" ]]; then
-  cp -r $QT_PLUGIN_DIR/platforms/* opengate_core/plugins/
-  cp -r $QT_PLUGIN_DIR/imageformats/* opengate_core/plugins/
+  cp -r $CONDA/envs/opengate_core/Library/bin/Qt6*.dll opengate_core/plugins/
 fi
 if [[ ${MATRIX_PYTHON_VERSION} == "3.10" ]]; then
   export CIBW_BUILD="cp310-*"
