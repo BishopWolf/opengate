@@ -3,6 +3,9 @@ set -e
 
 source $GITHUB_WORKSPACE/env_dump.txt
 source $CONDA/Scripts/activate opengate_core
+export PATH="/usr/local/miniconda/envs/opengate_core/bin/:$CONDA/Library/bin/:$PATH"
+ls $CONDA/Library/bin/
+ls usr/local/miniconda/envs/opengate_core/
 conda info
 conda install cmake==3.31.2
 echo ${MATRIX_OS}
@@ -23,7 +26,7 @@ else
 fi
 
 conda list
-export PATH="/usr/local/miniconda/envs/opengate_core/bin/:$PATH"
+
 pip install wget colored delvewheel
 
 pip install cibuildwheel[uv]==3.4.0
@@ -71,8 +74,10 @@ source $HOME/software/geant4/bin/geant4make.sh
 export CMAKE_PREFIX_PATH=$HOME/software/geant4/bin:$HOME/software/itk/bin/:${CMAKE_PREFIX_PATH}
 cd core
 mkdir opengate_core/plugins
-cp -r $QT_PLUGIN_DIR/platforms/* opengate_core/plugins/
-cp -r $QT_PLUGIN_DIR/imageformats/* opengate_core/plugins/
+if [[ ${MATRIX_OS} != "windows-11-arm" ]]; then
+  cp -r $QT_PLUGIN_DIR/platforms/* opengate_core/plugins/
+  cp -r $QT_PLUGIN_DIR/imageformats/* opengate_core/plugins/
+fi
 if [[ ${MATRIX_PYTHON_VERSION} == "3.10" ]]; then
   export CIBW_BUILD="cp310-*"
 elif [[ ${MATRIX_PYTHON_VERSION} == "3.11" ]]; then
