@@ -39,10 +39,10 @@ runs:
             fi
             echo "release=${varOS}" >> $GITHUB_OUTPUT
         fi
-    - name: Set up Homebrew
-      if: (inputs.os == 'macos-15') || (inputs.os == 'macos-15-intel')
-      id: set-up-homebrew
-      uses: Homebrew/actions/setup-homebrew@main
+    #- name: Set up Homebrew
+    #  if: (inputs.os == 'macos-15') || (inputs.os == 'macos-15-intel')
+    #  id: set-up-homebrew
+    #  uses: Homebrew/actions/setup-homebrew@main
     - name: Cache Homebrew prefix
       if: (inputs.os == 'macos-15') || (inputs.os == 'macos-15-intel')
       id: cache-homebrew
