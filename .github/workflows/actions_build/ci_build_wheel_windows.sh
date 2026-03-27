@@ -23,8 +23,8 @@ else
 fi
 conda info
 conda list
-echo "ls $CONDA/envs/opengate_core/Library/bin/Qt6*.dll"
-ls $CONDA/envs/opengate_core/Library/bin/Qt6*.dll
+echo "ls $CONDA/envs/opengate_core/Library/bin/"
+ls $CONDA/envs/opengate_core/Library/bin/
 echo "ls $QT_PLUGIN_DIR"
 ls $QT_PLUGIN_DIR
 pip install wget colored delvewheel
