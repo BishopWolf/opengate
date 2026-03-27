@@ -18,15 +18,11 @@ else
     export GEANT4_USE_OPENGL_X11=OFF
     export GEANT4_USE_QT_QT6=ON
     conda install conda-forge::qt6-main conda-forge::qt6-3d
-    export QT_PLUGIN_DIR=$($CONDA/envs/opengate_core/Library/bin/qtpaths6.bat --plugin-dir)
-    echo "QT_PLUGIN_DIR is $QT_PLUGIN_DIR"
+    QT6_DLL_FILES=$(find "$CONDA/envs/opengate_core/" -type f -iname "qt6*.dll" | tr '\r' '\n')
+    echo "QT6_DLL_FILES found:\n$QT6_DLL_FILES"
 fi
 conda info
 conda list
-echo "ls $CONDA/envs/opengate_core/Library/bin/"
-ls $CONDA/envs/opengate_core/Library/bin/
-echo 'find $CONDA/envs/opengate_core/ -type f -iname "qt6*.dll"'
-find $CONDA/envs/opengate_core/ -type f -iname "qt6*.dll"
 
 pip install wget colored delvewheel
 
@@ -74,9 +70,12 @@ cd $GITHUB_WORKSPACE
 source $HOME/software/geant4/bin/geant4make.sh
 export CMAKE_PREFIX_PATH=$HOME/software/geant4/bin:$HOME/software/itk/bin/:${CMAKE_PREFIX_PATH}
 cd core
-mkdir opengate_core/plugins
+mkdir -p opengate_core/plugins
 if [[ ${MATRIX_OS} != "windows-11-arm" ]]; then
-  cp -r $CONDA/envs/opengate_core/Library/bin/Qt6*.dll opengate_core/plugins/
+  for dll_file in $QT6_DLL_FILES; do
+    echo "Copying $dll_file -> opengate_core/plugins/"
+    cp -r "$dll_file" opengate_core/plugins/
+  done
 fi
 if [[ ${MATRIX_PYTHON_VERSION} == "3.10" ]]; then
   export CIBW_BUILD="cp310-*"
