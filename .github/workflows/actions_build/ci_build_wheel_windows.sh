@@ -31,7 +31,12 @@ else
 fi
 conda info
 conda list
-ls $CONDA/Library/bin/
+echo "ls $CONDA/envs/opengate_core/"
+ls $CONDA/envs/opengate_core/
+echo "ls $CONDA/envs/opengate_core/Library/bin/"
+ls $CONDA/envs/opengate_core/Library/bin/
+echo "ls $CONDA/envs/opengate_core/Scripts/"
+ls $CONDA/envs/opengate_core/Scripts/
 pip install wget colored delvewheel
 
 pip install cibuildwheel[uv]==3.4.0
