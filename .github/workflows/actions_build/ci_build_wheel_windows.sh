@@ -26,7 +26,7 @@ else
     export GEANT4_USE_OPENGL_X11=OFF
     export GEANT4_USE_QT_QT6=ON
     conda install conda-forge::qt6-main conda-forge::qt6-3d
-    export QT_PLUGIN_DIR=$(qtpaths6 --plugin-dir)
+    export QT_PLUGIN_DIR=$($CONDA/envs/opengate_core/Library/bin/qtpaths6.bat --plugin-dir)
     echo "QT_PLUGIN_DIR is $QT_PLUGIN_DIR"
 fi
 conda info
@@ -35,8 +35,10 @@ echo "ls $CONDA/envs/opengate_core/"
 ls $CONDA/envs/opengate_core/
 echo "ls $CONDA/envs/opengate_core/Library/bin/"
 ls $CONDA/envs/opengate_core/Library/bin/
-echo "ls $CONDA/envs/opengate_core/Scripts/"
-ls $CONDA/envs/opengate_core/Scripts/
+echo "ls $CONDA/envs/opengate_core/libs/"
+ls $CONDA/envs/opengate_core/libs/
+echo "ls $CONDA/envs/opengate_core/Lib/"
+ls $CONDA/envs/opengate_core/Lib/
 pip install wget colored delvewheel
 
 pip install cibuildwheel[uv]==3.4.0
