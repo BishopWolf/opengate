@@ -3,10 +3,8 @@ set -e
 
 source $GITHUB_WORKSPACE/env_dump.txt
 source $CONDA/Scripts/activate opengate_core
-export PATH="/usr/local/miniconda/envs/opengate_core/bin/:$CONDA/Library/bin/:$PATH"
+export PATH="$CONDA/Library/bin/:$PATH"
 ls $CONDA/Library/bin/
-ls usr/local/miniconda/envs/opengate_core/
-conda info
 conda install cmake==3.31.2
 echo ${MATRIX_OS}
 if [[ ${MATRIX_OS} == "windows-11-arm" ]]; then
@@ -24,9 +22,9 @@ else
     export QT_PLUGIN_DIR=$(qtpaths6 --plugin-dir)
     echo "QT_PLUGIN_DIR is $QT_PLUGIN_DIR"
 fi
-
+conda info
 conda list
-
+ls $CONDA/Library/bin/
 pip install wget colored delvewheel
 
 pip install cibuildwheel[uv]==3.4.0
