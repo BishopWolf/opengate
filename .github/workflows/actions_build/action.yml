@@ -66,6 +66,8 @@ runs:
     - name: Set up Python in Macos
       if: (inputs.os == 'macos-15') || (inputs.os == 'macos-15-intel')
       uses: actions/setup-python@v6
+      with:
+        python-version: '3.14'
     - name: Set up Miniconda in Windows and Macos with pinned python 3.14
       if: (inputs.os == 'windows-2025') || (inputs.os == 'windows-11-arm') || (inputs.os == 'macos-15') || (inputs.os == 'macos-15-intel')
       uses: conda-incubator/setup-miniconda@v3
