@@ -61,7 +61,7 @@ runs:
       with:
         python-version: '3.14'
     - name: Install cached Qt in macos
-      if: (inputs.os == 'macos-15') || (inputs.os == 'macos-15-intel')
+      if: (inputs.os == 'windows-2025') || (inputs.os == 'windows-11-arm') || (inputs.os == 'macos-15') || (inputs.os == 'macos-15-intel')
       uses: jurplel/install-qt-action@v4
       with:
         version: '6.10.2'
