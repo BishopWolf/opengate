@@ -3,8 +3,24 @@ set -e
 
 source $GITHUB_WORKSPACE/env_dump.txt
 
+brew install --force --verbose --overwrite \
+             ccache \
+             fftw \
+             libomp \
+             xerces-c || true
+brew uninstall --ignore-dependencies libxext
+brew uninstall --ignore-dependencies libx11
+
 mkdir -p $HOME/software
-sudo mkdir -p /Library/Frameworks/Python.framework/Versions/$MATRIX_PYTHON_VERSION/bin # be sure the directory exists for cibuildwheel to work properly
+export QT_PLUGIN_DIR=$(qtpaths6 --plugin-dir)
+
+if [ -d "$QT_PLUGIN_DIR" ]; then
+    echo "QT_PLUGIN_DIR is $QT_PLUGIN_DIR"
+else
+    QT_PLUGIN_DIR="$HOME/software/Qt/6.10.2/clang_64/plugins"
+    ls -l $QT_PLUGIN_DIR
+    echo "QT_PLUGIN_DIR is $QT_PLUGIN_DIR"
+fi
 
 pip install wget colored delocate 
 pip install cibuildwheel[uv]==3.4.0
@@ -51,8 +67,8 @@ source $HOME/software/geant4/bin/geant4make.sh
 export CMAKE_PREFIX_PATH=$HOME/software/geant4/bin:$HOME/software/itk/bin/:${CMAKE_PREFIX_PATH}
 cd core
 mkdir opengate_core/plugins
-cp -r /opt/homebrew/share/qt/plugins/platforms/* opengate_core/plugins/
-cp -r /opt/homebrew/share/qt/plugins/imageformats/* opengate_core/plugins/
+cp -r $QT_PLUGIN_DIR/platforms/* opengate_core/plugins/
+cp -r $QT_PLUGIN_DIR/imageformats/* opengate_core/plugins/
 export CIBW_BUILD_FRONTEND="build[uv]"
 export CIBW_PLATFORM="macos"
 export CIBW_SKIP="*t*"
