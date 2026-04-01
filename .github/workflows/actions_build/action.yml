@@ -60,12 +60,6 @@ runs:
       uses: actions/setup-python@v6
       with:
         python-version: '3.14'
-    - name: Install cached Qt in macos
-      if: (inputs.os == 'windows-2025') || (inputs.os == 'windows-11-arm') || (inputs.os == 'macos-15') || (inputs.os == 'macos-15-intel')
-      uses: jurplel/install-qt-action@v4
-      with:
-        version: '6.10.2'
-        dir: '${{ github.workspace }}/software'
     - name: Set up Miniconda in Windows and Macos with pinned python 3.14
       if: (inputs.os == 'windows-2025') || (inputs.os == 'windows-11-arm') || (inputs.os == 'macos-15') || (inputs.os == 'macos-15-intel')
       uses: conda-incubator/setup-miniconda@v3
@@ -74,6 +68,12 @@ runs:
           auto-update-conda: true
           activate-environment: opengate_core
           python-version: '3.14'
+    - name: Install cached Qt in macos and windows
+      if: (inputs.os == 'windows-2025') || (inputs.os == 'windows-11-arm') || (inputs.os == 'macos-15') || (inputs.os == 'macos-15-intel')
+      uses: jurplel/install-qt-action@v4
+      with:
+        version: '6.10.2'
+        dir: '${{ github.workspace }}/software'
     - name: Create opengate_core Wheel Linux
       if: (inputs.os == 'ubuntu-24.04') || (inputs.os == 'ubuntu-24.04-arm')
       env:

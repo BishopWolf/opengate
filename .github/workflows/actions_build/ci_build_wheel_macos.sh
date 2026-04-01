@@ -12,16 +12,15 @@ brew uninstall --ignore-dependencies libxext
 brew uninstall --ignore-dependencies libx11
 
 mkdir -p $HOME/software
-export QT_PLUGIN_DIR=$(qtpaths6 --plugin-dir)
+echo "QT_PLUGIN_PATH=$QT_PLUGIN_PATH"
+ls -l $QT_PLUGIN_PATH
+echo "QT_PLUGIN_PATH/platforms=$QT_PLUGIN_PATH/platforms"
+ls -l $QT_PLUGIN_PATH/platforms
+echo "QT_ROOT_DIR=$QT_ROOT_DIR"
+ls -l $QT_ROOT_DIR
 
-if [ -d "$QT_PLUGIN_DIR" ]; then
-    echo "QT_PLUGIN_DIR is $QT_PLUGIN_DIR"
-else
-    QT_PLUGIN_DIR="$GITHUB_WORKSPACE/software/Qt/6.10.2/macos/plugins"
-    ls -l $QT_PLUGIN_DIR
-    echo "QT_PLUGIN_DIR is $QT_PLUGIN_DIR"
-fi
-ls -l $QT_PLUGIN_DIR
+QT6_DYLIB_FILES=$(find "$QT_ROOT_DIR" -type f -iname "qt6*.dylib" | tr '\r' '\n')
+echo "QT6_DYLIB_FILES found:\n$QT6_DYLIB_FILES"
 
 pip install wget colored delocate 
 pip install cibuildwheel[uv]==3.4.0
@@ -68,8 +67,8 @@ source $HOME/software/geant4/bin/geant4make.sh
 export CMAKE_PREFIX_PATH=$HOME/software/geant4/bin:$HOME/software/itk/bin/:${CMAKE_PREFIX_PATH}
 cd core
 mkdir opengate_core/plugins
-cp -r $QT_PLUGIN_DIR/platforms/* opengate_core/plugins/
-cp -r $QT_PLUGIN_DIR/imageformats/* opengate_core/plugins/
+cp -r $QT_PLUGIN_PATH/platforms/* opengate_core/plugins/
+cp -r $QT_PLUGIN_PATH/imageformats/* opengate_core/plugins/
 export CIBW_BUILD_FRONTEND="build[uv]"
 export CIBW_PLATFORM="macos"
 export CIBW_SKIP="*t*"
@@ -77,10 +76,10 @@ export MACOSX_DEPLOYMENT_TARGET=15.0
 export CIBW_BEFORE_BUILD="uv pip install colored"
 
 if [[ ${MATRIX_OS} == "macos-15-intel" ]]; then
-    export DYLD_LIBRARY_PATH=$HOME/software/geant4/bin/BuildProducts/lib:$QT_PLUGIN_DIR/platforms:/opt/X11/lib/:$DYLD_LIBRARY_PATH:/Users/runner/miniconda3/envs/opengate_core/lib
+    export DYLD_LIBRARY_PATH=$HOME/software/geant4/bin/BuildProducts/lib:$QT_PLUGIN_PATH/platforms:/opt/X11/lib/:$DYLD_LIBRARY_PATH:/Users/runner/miniconda3/envs/opengate_core/lib
     export CIBW_ARCHS_MACOS="x86_64"
 else
-    export DYLD_LIBRARY_PATH=$HOME/software/geant4/bin/BuildProducts/lib:$QT_PLUGIN_DIR/platforms/:/opt/X11/lib/:$DYLD_LIBRARY_PATH:/opt/homebrew/lib
+    export DYLD_LIBRARY_PATH=$HOME/software/geant4/bin/BuildProducts/lib:$QT_PLUGIN_PATH/platforms/:/opt/X11/lib/:$DYLD_LIBRARY_PATH:/opt/homebrew/lib
     export CIBW_ARCHS_MACOS="arm64"
     python -c "import os,delocate; print(os.path.join(os.path.dirname(delocate.__file__), 'tools.py'));quit()" | xargs -I{} sed -i."" "s/first, /input.pop('i386',None); first, /g" {}
 fi
