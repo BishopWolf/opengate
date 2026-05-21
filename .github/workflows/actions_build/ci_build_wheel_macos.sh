@@ -3,10 +3,6 @@ set -e
 
 source $GITHUB_WORKSPACE/env_dump.txt
 
-# Ensure python is installed
-brew install python@${MATRIX_PYTHON_VERSION} || true
-brew link --overwrite python@${MATRIX_PYTHON_VERSION}
-
 mkdir -p $HOME/software
 
 pip install wget colored delocate 
