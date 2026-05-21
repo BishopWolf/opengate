@@ -23,8 +23,7 @@ fi
 
 export LDFLAGS="-L/usr/local/opt/llvm/lib"
 export CPPFLAGS="-I/usr/local/opt/llvm/include -fopenmp"
-conda info
-conda list
+
 export PATH="/usr/local/miniconda/envs/opengate_core/bin/:$PATH"
 export QT_PLUGIN_DIR=$(qtpaths6 --plugin-dir)
 echo "QT_PLUGIN_DIR is $QT_PLUGIN_DIR"
