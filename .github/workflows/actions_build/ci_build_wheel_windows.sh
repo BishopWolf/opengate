@@ -17,8 +17,7 @@ else
     export GEANT4_USE_QT=ON
     export GEANT4_USE_OPENGL_X11=OFF
     export GEANT4_USE_QT_QT6=ON
-    conda install conda-forge::qt6-main conda-forge::qt6-3d
-    QT6_DLL_FILES=$(find "$CONDA/envs/opengate_core/" -type f -iname "qt6*.dll" | tr '\r' '\n')
+    QT6_DLL_FILES=$(find "$HOME/software/" -type f -iname "qt6*.dll" | tr '\r' '\n')
     echo "QT6_DLL_FILES found:\n$QT6_DLL_FILES"
 fi
 conda info
