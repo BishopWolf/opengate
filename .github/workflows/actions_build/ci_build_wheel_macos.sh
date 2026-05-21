@@ -27,18 +27,6 @@ echo "QT6_DYLIB_FILES found:\n$QT6_DYLIB_FILES"
 pip install wget colored delocate 
 pip install cibuildwheel[uv]==3.4.0
 
-if [ "${BREW_CACHE}" != 'true' ]; then
-    brew install --force --verbose --overwrite \
-                ccache \
-                fftw \
-                libomp \
-                qt \
-                xerces-c || true
-
-    brew uninstall --ignore-dependencies libxext
-    brew uninstall --ignore-dependencies libx11
-fi
-
 if [[ ${MATRIX_OS} == "macos-15-intel" ]]; then
     conda install conda-forge::qt6-main conda-forge::qt6-3d
 else
