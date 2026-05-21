@@ -30,7 +30,7 @@ export QT_PLUGIN_DIR=$(qtpaths6 --plugin-dir)
 echo "QT_PLUGIN_DIR is $QT_PLUGIN_DIR"
 pip install wget colored setuptools
 # install cibuildwheel
-pip3 install cibuildwheel[uv]==3.4.0
+pip3 install cibuildwheel[uv]==3.4.0 --break-system-packages
 
 mkdir -p $HOME/software
 if [ "${MATRIX_CACHE}" != 'true' ]; then
