@@ -63,7 +63,7 @@ jobs:
       matrix:
         os: [windows-2025]
           #[ubuntu-24.04, macos-15, windows-2025]
-        python-version: ['3.14']]
+        python-version: ['3.14']
           #['3.10', '3.11', '3.12', '3.13', '3.14']
     steps:
     - name: Checkout github repo
