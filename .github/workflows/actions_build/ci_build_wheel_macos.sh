@@ -6,12 +6,7 @@ source $GITHUB_WORKSPACE/env_dump.txt
 mkdir -p $HOME/software
 
 pip install wget colored delocate 
-
-if [[ ${MATRIX_PYTHON_VERSION} == "3.10" ]]; then
-    pip install cibuildwheel[uv]==2.23.4
-else
-    pip install cibuildwheel[uv]==3.4.0
-fi
+pip install cibuildwheel[uv]==3.4.0
 
 if [ "${BREW_CACHE}" != 'true' ]; then
     brew install --force --verbose --overwrite \
