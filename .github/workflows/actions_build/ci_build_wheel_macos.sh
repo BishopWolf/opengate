@@ -18,8 +18,10 @@ echo "QT_PLUGIN_PATH/platforms=$QT_PLUGIN_PATH/platforms"
 ls -l $QT_PLUGIN_PATH/platforms
 echo "QT_ROOT_DIR=$QT_ROOT_DIR"
 ls -l $QT_ROOT_DIR
+echo "QT_ROOT_DIR/lib=$QT_ROOT_DIR/lib"
+ls -l $QT_ROOT_DIR/lib
 
-QT6_DYLIB_FILES=$(find "$QT_ROOT_DIR" -type f -iname "qt6*.dylib" | tr '\r' '\n')
+QT6_DYLIB_FILES=$(find "$QT_ROOT_DIR" -type f -iname "*.dylib" | tr '\r' '\n')
 echo "QT6_DYLIB_FILES found:\n$QT6_DYLIB_FILES"
 
 pip install wget colored delocate 
