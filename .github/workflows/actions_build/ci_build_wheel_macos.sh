@@ -4,6 +4,7 @@ set -e
 source $GITHUB_WORKSPACE/env_dump.txt
 
 mkdir -p $HOME/software
+sudo mkdir -p /Library/Frameworks/Python.framework/Versions # be sure the directory exists for cibuildwheel to work properly
 
 pip install wget colored delocate 
 pip install cibuildwheel[uv]==3.4.0
