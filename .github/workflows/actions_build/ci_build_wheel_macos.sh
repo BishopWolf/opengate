@@ -2,8 +2,12 @@
 set -e
 
 source $GITHUB_WORKSPACE/env_dump.txt
-brew install python pipx
-pipx install wget colored delocate cibuildwheel[uv]==3.4.0
+mkdir -p $HOME/software
+
+brew install python
+python3 -m venv $HOME/softwareopengate_core
+source $HOME/softwareopengate_core/bin/activate
+python3 -m pip install wget colored delocate cibuildwheel[uv]==3.4.0
 
 if [ "${BREW_CACHE}" != 'true' ]; then
     brew install --force --verbose --overwrite \
@@ -33,7 +37,6 @@ pip install wget colored setuptools
 # install cibuildwheel
 pip3 install cibuildwheel[uv]==3.4.0 --break-system-packages
 
-mkdir -p $HOME/software
 if [ "${MATRIX_CACHE}" != 'true' ]; then
     cd $HOME/software
     mkdir geant4
@@ -102,7 +105,7 @@ elif [[ ${MATRIX_PYTHON_VERSION} == "3.14" ]]; then
   export CIBW_BUILD="cp314-*"
 fi
 
-pipx run cibuildwheel --output-dir dist
+python3 -m cibuildwheel --output-dir dist
 cd dist
 if [[ ${MATRIX_OS} == "macos-15-intel" ]]; then
     find . -name '*whl' -exec bash -c ' mv $0 ${0/macosx_15_0/macosx_10_9}' {} \;
