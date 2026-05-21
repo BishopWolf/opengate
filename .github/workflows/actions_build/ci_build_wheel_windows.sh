@@ -4,6 +4,7 @@ set -e
 source $GITHUB_WORKSPACE/env_dump.txt
 source $CONDA/Scripts/activate opengate_core
 conda install cmake==3.31.2
+cmake --version
 export PATH="$CONDA/envs/opengate_core/:$CONDA/envs/opengate_core/Library/bin/:$PATH"
 echo ${MATRIX_OS}
 if [[ ${MATRIX_OS} == "windows-11-arm" ]]; then
@@ -24,7 +25,7 @@ conda info
 conda list
 export PATH="/usr/local/miniconda/envs/opengate_core/bin/:$PATH"
 
-pip install wget colored delvewheel
+pip install wget colored delvewheel dlib
 
 pip install cibuildwheel[uv]==3.4.0
 
@@ -69,6 +70,7 @@ fi
 cd $GITHUB_WORKSPACE
 source $HOME/software/geant4/bin/geant4make.sh
 export CMAKE_PREFIX_PATH=$HOME/software/geant4/bin:$HOME/software/itk/bin/:${CMAKE_PREFIX_PATH}
+export ITK_DIR=$HOME/software/itk/src
 cp VERSION core/VERSION 
 cd core
 mkdir -p opengate_core/plugins
@@ -103,7 +105,7 @@ ls $HOME/software/geant4/bin/BuildProducts/Release/bin
 ls $HOME/software/geant4/bin/BuildProducts/Release/lib/
 
 # use delvewheel on windows
-export CIBW_BEFORE_BUILD_WINDOWS="uv pip install colored"
+export CIBW_BEFORE_BUILD_WINDOWS="uv pip install colored dlib"
 export CIBW_REPAIR_WHEEL_COMMAND_WINDOWS=''
 python -m cibuildwheel --output-dir dist
 
