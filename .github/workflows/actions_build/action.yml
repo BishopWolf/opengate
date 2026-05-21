@@ -57,11 +57,20 @@ runs:
           auto-update-conda: true
           activate-environment: opengate_core
           python-version: '3.14'
-    - name: Install cached Qt in macos and windows
-      if: (inputs.os == 'windows-2025') || (inputs.os == 'windows-11-arm') || (inputs.os == 'macos-15') || (inputs.os == 'macos-15-intel')
+    - name: Install cached Qt in windows
+      if: (inputs.os == 'windows-2025') || (inputs.os == 'windows-11-arm')
       uses: jurplel/install-qt-action@v4
       with:
         dir: '${{ github.workspace }}/software'
+        version: '6.11.1'
+        arch: 'win64_msvc2022_64'
+    - name: Install cached Qt in macos
+      if: (inputs.os == 'macos-15') || (inputs.os == 'macos-15-intel')
+      uses: jurplel/install-qt-action@v4
+      with:
+        dir: '${{ github.workspace }}/software'
+        version: '6.11.1'
+        arch: 'clang_64'
     - name: Set up Homebrew
       if: (inputs.os == 'macos-15') || (inputs.os == 'macos-15-intel')
       id: set-up-homebrew

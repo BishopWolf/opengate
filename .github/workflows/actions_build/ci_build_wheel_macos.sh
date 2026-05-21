@@ -27,12 +27,6 @@ echo "QT6_DYLIB_FILES found:\n$QT6_DYLIB_FILES"
 pip install wget colored delocate 
 pip install cibuildwheel[uv]==3.4.0
 
-if [[ ${MATRIX_OS} == "macos-15-intel" ]]; then
-    conda install conda-forge::qt6-main conda-forge::qt6-3d
-else
-    brew install qt
-fi
-
 export LDFLAGS="-L/usr/local/opt/llvm/lib"
 export CPPFLAGS="-I/usr/local/opt/llvm/include -fopenmp"
 
