@@ -15,6 +15,12 @@ if [ "${BREW_CACHE}" != 'true' ]; then
     brew uninstall --ignore-dependencies libx11
 fi
 
+if [[ ${MATRIX_OS} == "macos-15-intel" ]]; then
+    conda install conda-forge::qt6-main conda-forge::qt6-3d
+else
+    brew install qt
+fi
+
 export LDFLAGS="-L/usr/local/opt/llvm/lib"
 export CPPFLAGS="-I/usr/local/opt/llvm/include -fopenmp"
 conda info
