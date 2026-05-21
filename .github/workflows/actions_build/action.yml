@@ -39,18 +39,34 @@ runs:
             fi
             echo "release=${varOS}" >> $GITHUB_OUTPUT
         fi
+    - name: Set up Python 3.14
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.14'
+    - name: Cache modules
+      id: cache_opengate_core_dependencies
+      uses: actions/cache@v5
+      with:
+        path: ~/software
+        key: ${{ runner.os }}-${{ steps.get-os-version.outputs.release }}_geant4_${{ env.GEANT4_VERSION }}_itk_${{ env.ITK_VERSION }}_build
+        restore-keys: ${{ runner.os }}-${{ steps.get-os-version.outputs.release }}_geant4_${{ env.GEANT4_VERSION }}_itk_${{ env.ITK_VERSION }}_build
+    - uses: conda-incubator/setup-miniconda@v3
+      if: (inputs.os == 'macos-15') || (inputs.os == 'macos-15-intel') || (inputs.os == 'windows-2025') || (inputs.os == 'windows-11-arm')
+      with:
+          miniconda-version: "latest"
+          auto-update-conda: true
+          activate-environment: opengate_core
+          python-version: '3.14'
+    - name: Install cached Qt in macos and windows
+      if: (inputs.os == 'windows-2025') || (inputs.os == 'windows-11-arm') || (inputs.os == 'macos-15') || (inputs.os == 'macos-15-intel')
+      uses: jurplel/install-qt-action@v4
+      with:
+        version: '6.10.2'
+        dir: '${{ github.workspace }}/software'
     - name: Set up Homebrew
       if: (inputs.os == 'macos-15') || (inputs.os == 'macos-15-intel')
       id: set-up-homebrew
       uses: Homebrew/actions/setup-homebrew@main
-    # - name: Cache Homebrew prefix
-    #   if: (inputs.os == 'macos-15') || (inputs.os == 'macos-15-intel')
-    #   id: cache-homebrew
-    #   uses: Homebrew/actions/cache-homebrew-prefix@main
-    #   with:
-    #     install: wget ccache fftw libomp qt xerces-c cmake
-    #     uninstall: true
-    #     workflow-key: ${{ runner.os }}-${{ steps.get-os-version.outputs.release }}_geant4_${{ env.GEANT4_VERSION }}_itk_${{ env.ITK_VERSION }}_homebrew
     - name: Create opengate_core Wheel Linux
       if: (inputs.os == 'ubuntu-24.04') || (inputs.os == 'ubuntu-24.04-arm')
       env:
