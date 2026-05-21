@@ -2,7 +2,8 @@
 set -e
 
 source $GITHUB_WORKSPACE/env_dump.txt
-brew install python
+brew install python pipx
+pipx install wget colored delocate cibuildwheel[uv]==3.4.0
 
 if [ "${BREW_CACHE}" != 'true' ]; then
     brew install --force --verbose --overwrite \
@@ -101,7 +102,7 @@ elif [[ ${MATRIX_PYTHON_VERSION} == "3.14" ]]; then
   export CIBW_BUILD="cp314-*"
 fi
 
-python3 -m cibuildwheel --output-dir dist
+pipx run cibuildwheel --output-dir dist
 cd dist
 if [[ ${MATRIX_OS} == "macos-15-intel" ]]; then
     find . -name '*whl' -exec bash -c ' mv $0 ${0/macosx_15_0/macosx_10_9}' {} \;
