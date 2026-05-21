@@ -30,7 +30,7 @@ export QT_PLUGIN_DIR=$(qtpaths6 --plugin-dir)
 echo "QT_PLUGIN_DIR is $QT_PLUGIN_DIR"
 pip install wget colored setuptools
 # install cibuildwheel
-pip install cibuildwheel[uv]==3.4.0
+pip3 install cibuildwheel[uv]==3.4.0
 
 mkdir -p $HOME/software
 if [ "${MATRIX_CACHE}" != 'true' ]; then
@@ -87,7 +87,7 @@ if [[ ${MATRIX_OS} == "macos-15-intel" ]]; then
 else
     export DYLD_LIBRARY_PATH=$HOME/software/geant4/bin/BuildProducts/lib:/opt/homebrew/share/qt/plugins/platforms/:/opt/X11/lib/:$DYLD_LIBRARY_PATH:/opt/homebrew/lib
     export CIBW_ARCHS_MACOS="arm64"
-    python -c "import os,delocate; print(os.path.join(os.path.dirname(delocate.__file__), 'tools.py'));quit()" | xargs -I{} sed -i."" "s/first, /input.pop('i386',None); first, /g" {}
+    python3 -c "import os,delocate; print(os.path.join(os.path.dirname(delocate.__file__), 'tools.py'));quit()" | xargs -I{} sed -i."" "s/first, /input.pop('i386',None); first, /g" {}
 fi
 if [[ ${MATRIX_PYTHON_VERSION} == "3.10" ]]; then
   export CIBW_BUILD="cp310-*"
@@ -101,7 +101,7 @@ elif [[ ${MATRIX_PYTHON_VERSION} == "3.14" ]]; then
   export CIBW_BUILD="cp314-*"
 fi
 
-python -m cibuildwheel --output-dir dist
+python3 -m cibuildwheel --output-dir dist
 cd dist
 if [[ ${MATRIX_OS} == "macos-15-intel" ]]; then
     find . -name '*whl' -exec bash -c ' mv $0 ${0/macosx_15_0/macosx_10_9}' {} \;
