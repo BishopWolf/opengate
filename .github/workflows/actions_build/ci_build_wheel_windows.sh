@@ -3,8 +3,13 @@ set -e
 
 source $GITHUB_WORKSPACE/env_dump.txt
 source $CONDA/Scripts/activate opengate_core
-export PATH="$CONDA/Library/bin/:$PATH"
+export PATH="$CONDA/env/opengate_core/bin/:$CONDA/Library/bin/:$PATH"
+echo "ls $CONDA/Library/bin/"
 ls $CONDA/Library/bin/
+echo "ls $CONDA/env/opengate_core/bin/"
+ls $CONDA/env/opengate_core/bin/
+echo "ls $CONDA/env/opengate_core/Scripts/"
+ls $CONDA/env/opengate_core/Scripts/
 conda install cmake==3.31.2
 echo ${MATRIX_OS}
 if [[ ${MATRIX_OS} == "windows-11-arm" ]]; then
