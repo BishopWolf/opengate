@@ -24,7 +24,6 @@ fi
 export LDFLAGS="-L/usr/local/opt/llvm/lib"
 export CPPFLAGS="-I/usr/local/opt/llvm/include -fopenmp"
 conda info
-conda install cmake==3.31.2
 conda list
 export PATH="/usr/local/miniconda/envs/opengate_core/bin/:$PATH"
 export QT_PLUGIN_DIR=$(qtpaths6 --plugin-dir)
