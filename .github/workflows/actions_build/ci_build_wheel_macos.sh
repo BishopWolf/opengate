@@ -17,10 +17,11 @@ export QT_PLUGIN_DIR=$(qtpaths6 --plugin-dir)
 if [ -d "$QT_PLUGIN_DIR" ]; then
     echo "QT_PLUGIN_DIR is $QT_PLUGIN_DIR"
 else
-    QT_PLUGIN_DIR="$HOME/software/Qt/6.10.2/clang_64/plugins"
+    QT_PLUGIN_DIR="$GITHUB_WORKSPACE/software/Qt/6.10.2/macos/plugins"
     ls -l $QT_PLUGIN_DIR
     echo "QT_PLUGIN_DIR is $QT_PLUGIN_DIR"
 fi
+ls -l $QT_PLUGIN_DIR
 
 pip install wget colored delocate 
 pip install cibuildwheel[uv]==3.4.0
