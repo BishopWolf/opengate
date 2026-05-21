@@ -22,6 +22,7 @@ else
 fi
 conda info
 conda list
+export PATH="/usr/local/miniconda/envs/opengate_core/bin/:$PATH"
 
 pip install wget colored delvewheel
 
@@ -87,6 +88,12 @@ elif [[ ${MATRIX_PYTHON_VERSION} == "3.13" ]]; then
   export CIBW_BUILD="cp313-*"
 elif [[ ${MATRIX_PYTHON_VERSION} == "3.14" ]]; then
   export CIBW_BUILD="cp314-*"
+fi
+echo ${MATRIX_OS}
+if [[ ${MATRIX_OS} == "windows-11-arm" ]]; then
+    export CIBW_ARCHS="ARM64"
+else
+    export CIBW_ARCHS="AMD64"
 fi
 export CIBW_BUILD_FRONTEND="build[uv]"
 export CIBW_SKIP="*t*"
