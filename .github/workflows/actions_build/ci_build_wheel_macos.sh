@@ -2,6 +2,7 @@
 set -e
 
 source $GITHUB_WORKSPACE/env_dump.txt
+brew install python
 
 if [ "${BREW_CACHE}" != 'true' ]; then
     brew install --force --verbose --overwrite \
