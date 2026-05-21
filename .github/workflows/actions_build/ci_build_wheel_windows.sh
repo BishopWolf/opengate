@@ -3,16 +3,16 @@ set -e
 
 source $GITHUB_WORKSPACE/env_dump.txt
 source $CONDA/Scripts/activate opengate_core
-export PATH="$CONDA/envs/opengate_core/bin/:$CONDA/Library/bin/:$PATH"
 echo "ls $CONDA/Library/bin/"
 ls $CONDA/Library/bin/
 echo "ls $CONDA/envs/opengate_core/"
 ls $CONDA/envs/opengate_core/
-echo "ls $CONDA/envs/opengate_core/bin/"
-ls $CONDA/envs/opengate_core/bin/
+echo "ls $CONDA/envs/opengate_core/Library/bin/"
+ls $CONDA/envs/opengate_core/Library/bin/
 echo "ls $CONDA/envs/opengate_core/Scripts/"
 ls $CONDA/envs/opengate_core/Scripts/
 conda install cmake==3.31.2
+export PATH="$CONDA/envs/opengate_core/:$CONDA/envs/opengate_core/Library/bin/:$PATH"
 echo ${MATRIX_OS}
 if [[ ${MATRIX_OS} == "windows-11-arm" ]]; then
     # On Windows ARM qt6 is not supported
