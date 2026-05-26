@@ -7,6 +7,7 @@ brew install --force --verbose --overwrite \
             ccache \
             fftw \
             libomp \
+            qt \
             xerces-c || true
 
 brew uninstall --ignore-dependencies libxext
@@ -17,16 +18,9 @@ export CPPFLAGS="-I/usr/local/opt/llvm/include -fopenmp"
 conda info
 conda list
 export PATH="/Users/runner/miniconda3/envs/opengate_core/bin/:$PATH"
-
-if [[ ${MATRIX_OS} == "macos-15-intel" ]]; then
-    conda install conda-forge::qt6-main conda-forge::qt6-3d
-    export QT_PLUGIN_DIR="/Users/runner/miniconda3/envs/opengate_core/lib/qt6/plugins"
-else
-    brew install qt
-    export QT_PLUGIN_DIR=$(qtpaths6 --plugin-dir)
-fi
-
+export QT_PLUGIN_DIR=$(qtpaths6 --plugin-dir)
 echo "QT_PLUGIN_DIR is $QT_PLUGIN_DIR"
+
 pip install wget colored setuptools
 # install cibuildwheel
 pip install cibuildwheel[uv]==3.4.0
@@ -81,10 +75,10 @@ export MACOSX_DEPLOYMENT_TARGET=15.0
 export CIBW_BEFORE_BUILD="uv pip install colored"
 
 if [[ ${MATRIX_OS} == "macos-15-intel" ]]; then
-    export DYLD_LIBRARY_PATH=$HOME/software/geant4/bin/BuildProducts/lib:/Users/runner/miniconda3/envs/opengate_core/lib/qt6/plugins/platforms:/opt/X11/lib/:$DYLD_LIBRARY_PATH:/Users/runner/miniconda3/envs/opengate_core/lib
+    export DYLD_LIBRARY_PATH=$HOME/software/geant4/bin/BuildProducts/lib:$QT_PLUGIN_DIR/platforms/:/opt/X11/lib/:$DYLD_LIBRARY_PATH:/Users/runner/miniconda3/envs/opengate_core/lib
     export CIBW_ARCHS_MACOS="x86_64"
 else
-    export DYLD_LIBRARY_PATH=$HOME/software/geant4/bin/BuildProducts/lib:/opt/homebrew/share/qt/plugins/platforms/:/opt/X11/lib/:$DYLD_LIBRARY_PATH:/opt/homebrew/lib
+    export DYLD_LIBRARY_PATH=$HOME/software/geant4/bin/BuildProducts/lib:$QT_PLUGIN_DIR/platforms/:/opt/X11/lib/:$DYLD_LIBRARY_PATH:/opt/homebrew/lib
     export CIBW_ARCHS_MACOS="arm64"
     python -c "import os,delocate; print(os.path.join(os.path.dirname(delocate.__file__), 'tools.py'));quit()" | xargs -I{} sed -i."" "s/first, /input.pop('i386',None); first, /g" {}
 fi
